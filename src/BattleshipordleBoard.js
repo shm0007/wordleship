@@ -12,9 +12,17 @@ class Board extends React.Component {
     isMultiplayer: PropTypes.bool,
   };
 
+  constructor(props) {
+    super(props); 
+    this.state = {
+      focusedCell: null
+    }
+  };
+
+
   onClick = id => {
     if (this.isActive(id)) {
-      this.props.moves.clickCell(id);
+      this.setState({ focusedCell: id })
     }
   };
 
@@ -24,16 +32,32 @@ class Board extends React.Component {
     return true;
   }
 
+  isFocusedCell(id) {
+    console.log("checking id");
+    return this.state.focusedCell === id;
+  }
+
   render() {
     let tbody = [];
     for (let i = 0; i < 10; i++) {
       let cells = [];
       for (let j = 0; j < 10; j++) {
         const id = 10 * i + j;
+
+        let classnames = "";
+
+        if(this.isActive(id)) {
+          classnames += "active";
+        }
+
+        if(this.isFocusedCell(id)) {
+          classnames += " focused";
+        }
+
         cells.push(
           <td
             key={id}
-            className={this.isActive(id) ? 'active' : ''}
+            className={classnames}
             onClick={() => this.onClick(id)}
           >
             {this.props.G.cells[id]}
