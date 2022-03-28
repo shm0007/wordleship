@@ -23,17 +23,44 @@ class Board extends React.Component {
   onClick = id => {
     if (this.isActive(id)) {
       this.setState({ focusedCell: id })
+      window.addEventListener('keydown', this.keydown)
     }
   };
 
+  keydown = e => {
+    const key = e.key.toLowerCase();
+    console.log(key);
+
+    const isLetter = /^[a-z]$/i.test(key)
+
+    if(this.state.focusedCell !== null && isLetter) {
+      this.props.moves.insertLetter(this.state.focusedCell, key);
+    }
+    if(key === "backspace") {
+      this.props.moves.clearLetter(this.state.focusedCell);
+    }
+
+    if(key === "tab") {
+      
+      this.setState({
+        focusedCell: this.state.focusedCell + 1
+      })
+    }
+
+    if(key === "enter") {
+      this.setState({
+        focusedCell: this.state.focusedCell + 10
+      })
+    }
+
+  }
+
   isActive(id) {
     if (!this.props.isActive) return false;
-    if (this.props.G.cells[id] !== null) return false;
     return true;
   }
 
   isFocusedCell(id) {
-    console.log("checking id");
     return this.state.focusedCell === id;
   }
 
