@@ -1,11 +1,10 @@
 import { Client } from 'boardgame.io/react';
-import { Battleshipordle } from './Battleshipordle'
-import { BattleshipordleBoard } from './BattleshipordleBoard';
+import { Battleshipordle } from './Battleshipordle';
+import Board from './BattleshipordleBoard';
 
-
-const App = Client({ 
+const App = Client({
   game: Battleshipordle,
-  board: BattleshipordleBoard
+  board: Board,
 });
 
 export default App;
