@@ -87,7 +87,7 @@ class Board extends React.Component {
             className={classnames}
             onClick={() => this.onClick(id)}
           >
-            {this.props.G.cells[id]}
+            {this.props.G.board[0][id]}
           </td>
         );
       }

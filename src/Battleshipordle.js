@@ -1,17 +1,30 @@
 export const Battleshipordle = {
-  setup: () => ({ cells: Array(100).fill(null) }),
+  setup: () => ({ 
+    board: [ Array(100).fill(null), Array(100).fill(null)]
+   }),
 
-  moves: {
-    clickCell: (G, ctx, id) => {
-      G.cells[id] = ctx.currentPlayer;
+  phases: {
+    //handle building ship words
+    setup: {
+      start: true,
+      moves: {
+        insertLetter,
+        clearLetter
+      }
     },
-    
-    insertLetter: (G, ctx, id, letter) => {
-      G.cells[id] = letter;
-    },
-
-    clearLetter: (G, ctx, id) => {
-      G.cells[id] = null;
+    attack: {
+      moves: {
+        insertLetter,
+        clearLetter
+      }
     }
-  },
+  }
 };
+
+function insertLetter(G, ctx, id, letter) {
+  G.board[ctx.currentPlayer][id] = letter;
+}
+
+function clearLetter(G, ctx, id) {
+  G.board[ctx.currentPlayer][id] = null;
+}
