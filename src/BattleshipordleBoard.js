@@ -27,6 +27,7 @@ class Board extends React.Component {
     }
   };
 
+  //TODO: Change cell color if its been tampered with in the current turn.
   keydown = e => {
     const key = e.key.toLowerCase();
     console.log(key);
@@ -96,13 +97,15 @@ class Board extends React.Component {
 
     let winner = null;
     if (this.props.ctx.gameover) {
-      winner =
-        this.props.ctx.gameover.winner !== undefined ? (
-          <div id="winner">Winner: {this.props.ctx.gameover.winner}</div>
-        ) : (
-            <div id="winner">Draw!</div>
-          );
+      if(this.props.ctx.gameover.winner !== undefined) {
+        winner = (<div id="winner">Winner: {this.props.ctx.gameover.winner}</div>)
+      } 
+      else {
+        winner = (<div id="winner">Draw!</div>)
+      }
     }
+
+    let submitAttackButton = (<button onClick={this.props.moves.submitAttack}>Attack!</button>)
 
     return (
       <div>
@@ -110,6 +113,7 @@ class Board extends React.Component {
           <tbody>{tbody}</tbody>
         </table>
         {winner}
+        {submitAttackButton}
       </div>
     );
   }
