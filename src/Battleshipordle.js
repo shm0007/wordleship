@@ -13,6 +13,7 @@ export const Battleshipordle = {
         insertLetter,
         clearLetter,
         resetBoard,
+        placeShip
       }
     },
     attack: {
@@ -63,6 +64,16 @@ function submitAttack(G, ctx, id) {
   if(isValidWord()) {
 
   }
+}
+
+/**
+ * Place a ship in the beginning of the game
+ * @param {object} G 
+ * @param {object} ctx 
+ * @param {object} id 
+ */
+function placeShip(G, ctx, id) {
+
 }
 
 /**
