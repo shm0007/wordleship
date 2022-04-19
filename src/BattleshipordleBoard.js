@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import './board.css';
-
+import Validator from "./service/word-validator";
 class Board extends React.Component {
   static propTypes = {
     G: PropTypes.any.isRequired,
@@ -66,6 +66,7 @@ class Board extends React.Component {
   }
 
   render() {
+
     let tbody = [];
     for (let i = 0; i < 10; i++) {
       let cells = [];
