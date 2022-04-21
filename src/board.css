@@ -29,3 +29,7 @@
   td.active:hover {
     background: #eeffff;
   }
+
+  td.focused {
+      background: #ff0000;
+  }

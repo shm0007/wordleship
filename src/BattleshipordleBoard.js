@@ -12,16 +12,57 @@ class Board extends React.Component {
     isMultiplayer: PropTypes.bool,
   };
 
-  onClick = id => {
-    if (this.isActive(id)) {
-      this.props.moves.clickCell(id);
+  constructor(props) {
+    super(props); 
+    this.state = {
+      focusedCell: null
     }
   };
 
+
+  onClick = id => {
+    if (this.isActive(id)) {
+      this.setState({ focusedCell: id })
+      window.addEventListener('keydown', this.keydown)
+    }
+  };
+
+  //TODO: Change cell color if its been tampered with in the current turn.
+  keydown = e => {
+    const key = e.key.toLowerCase();
+    console.log(key);
+
+    const isLetter = /^[a-z]$/i.test(key)
+
+    if(this.state.focusedCell !== null && isLetter) {
+      this.props.moves.insertLetter(this.state.focusedCell, key);
+    }
+    if(key === "backspace") {
+      this.props.moves.clearLetter(this.state.focusedCell);
+    }
+
+    if(key === "tab") {
+      
+      this.setState({
+        focusedCell: this.state.focusedCell + 1
+      })
+    }
+
+    if(key === "enter") {
+      this.setState({
+        focusedCell: this.state.focusedCell + 10
+      })
+    }
+
+  }
+
   isActive(id) {
     if (!this.props.isActive) return false;
-    if (this.props.G.cells[id] !== null) return false;
     return true;
+  }
+
+  isFocusedCell(id) {
+    return this.state.focusedCell === id;
   }
 
   render() {
@@ -30,13 +71,24 @@ class Board extends React.Component {
       let cells = [];
       for (let j = 0; j < 10; j++) {
         const id = 10 * i + j;
+
+        let classnames = "";
+
+        if(this.isActive(id)) {
+          classnames += "active";
+        }
+
+        if(this.isFocusedCell(id)) {
+          classnames += " focused";
+        }
+
         cells.push(
           <td
             key={id}
-            className={this.isActive(id) ? 'active' : ''}
+            className={classnames}
             onClick={() => this.onClick(id)}
           >
-            {this.props.G.cells[id]}
+            {this.props.G.board[0][id]}
           </td>
         );
       }
@@ -45,13 +97,15 @@ class Board extends React.Component {
 
     let winner = null;
     if (this.props.ctx.gameover) {
-      winner =
-        this.props.ctx.gameover.winner !== undefined ? (
-          <div id="winner">Winner: {this.props.ctx.gameover.winner}</div>
-        ) : (
-            <div id="winner">Draw!</div>
-          );
+      if(this.props.ctx.gameover.winner !== undefined) {
+        winner = (<div id="winner">Winner: {this.props.ctx.gameover.winner}</div>)
+      } 
+      else {
+        winner = (<div id="winner">Draw!</div>)
+      }
     }
+
+    let submitAttackButton = (<button onClick={this.props.moves.submitAttack}>Attack!</button>)
 
     return (
       <div>
@@ -59,6 +113,7 @@ class Board extends React.Component {
           <tbody>{tbody}</tbody>
         </table>
         {winner}
+        {submitAttackButton}
       </div>
     );
   }
