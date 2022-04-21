@@ -1,7 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import './board.css';
-import Validator from "./service/word-validator";
 class Board extends React.Component {
   static propTypes = {
     G: PropTypes.any.isRequired,
@@ -15,12 +14,14 @@ class Board extends React.Component {
   constructor(props) {
     super(props); 
     this.state = {
-      focusedCell: null
+      focusedCell: null,
+      visibleBoard: 0
     }
   };
 
 
   onClick = id => {
+    console.log(this.state.visibleBoard);
     if (this.isActive(id)) {
       this.setState({ focusedCell: id })
       window.addEventListener('keydown', this.keydown)
@@ -35,7 +36,7 @@ class Board extends React.Component {
     const isLetter = /^[a-z]$/i.test(key)
 
     if(this.state.focusedCell !== null && isLetter) {
-      this.props.moves.insertLetter(this.state.focusedCell, key);
+      this.props.moves.insertLetter(this.boardToRender(), this.state.focusedCell, key);
     }
     if(key === "backspace") {
       this.props.moves.clearLetter(this.state.focusedCell);
@@ -65,6 +66,15 @@ class Board extends React.Component {
     return this.state.focusedCell === id;
   }
 
+  boardToRender() {
+    if(this.props.ctx.phase === "setup") {
+      return 0; //TODO: Change this to be dynamic to the player
+    }
+    return this.props.ctx.currentPlayer === 1 ? 0 : 1;
+  }
+
+
+
   render() {
 
     let tbody = [];
@@ -89,7 +99,7 @@ class Board extends React.Component {
             className={classnames}
             onClick={() => this.onClick(id)}
           >
-            {this.props.G.board[0][id]}
+            {this.props.G.board[this.boardToRender()][id]}
           </td>
         );
       }
@@ -107,14 +117,17 @@ class Board extends React.Component {
     }
 
     let submitAttackButton = (<button onClick={this.props.moves.submitAttack}>Attack!</button>)
+    let resetBoardButton = (<button onClick={this.props.moves.resetBoard}>Reset Board</button>)
 
     return (
       <div>
+        rendered board: {this.boardToRender()}
         <table id="board">
           <tbody>{tbody}</tbody>
         </table>
         {winner}
         {submitAttackButton}
+        {resetBoardButton}
       </div>
     );
   }
