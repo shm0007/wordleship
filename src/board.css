@@ -17,19 +17,23 @@
     width: 50px;
     height: 50px;
     line-height: 50px;
-    border: 3px solid #aaa;
-    background: #fff;
+    border: 1px solid rgb(255, 255, 255);
+    background: rgb(255, 255, 255);
   }
   
   td.active {
     cursor: pointer;
-    background: #eeffe9;
+    background: #7f92ff;
   }
   
   td.active:hover {
-    background: #eeffff;
+    background: #eef6ff;
   }
 
   td.focused {
-      background: #ff0000;
+      background: #ffffff;
+  }
+
+  td.ship {
+    background: grey;
   }
