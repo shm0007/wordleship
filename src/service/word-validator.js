@@ -8,6 +8,18 @@ const sevenLetterJson = require("../7-letter-words.json");
 class Validator{
     dict = new Set();
     constructor(){
+
+        twoLetterJson.forEach(word => {
+            this.dict.add(word);
+        })
+
+        threeLetterJson.forEach(word => {
+            this.dict.add(word);
+        })
+
+        fourLetterJson.forEach(word => {
+            this.dict.add(word);
+        });
         fiveLetterJson.forEach(word => {
             this.dict.add(word);
         });
@@ -17,12 +29,9 @@ class Validator{
         sevenLetterJson.forEach(word => {
             this.dict.add(word);
         });
-        
-
     }
 
     validate(word){
-       
         if(this.dict.has(word))
             return true;
         else
