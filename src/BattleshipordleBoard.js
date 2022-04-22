@@ -19,9 +19,7 @@ class Board extends React.Component {
     }
   };
 
-
   onClick = id => {
-    console.log(this.state.visibleBoard);
     if (this.isActive(id)) {
       this.setState({ focusedCell: id })
       window.addEventListener('keydown', this.keydown)
@@ -77,6 +75,35 @@ class Board extends React.Component {
 
   render() {
 
+    let winner = null;
+    if (this.props.ctx.gameover) {
+      if(this.props.ctx.gameover.winner !== undefined) {
+        winner = (<div id="winner">Winner: {this.props.ctx.gameover.winner}</div>)
+      } 
+      else {
+        winner = (<div id="winner">Draw!</div>)
+      }
+    }
+
+    let submitAttackButton = (<button onClick={this.props.moves.submitAttack}>Attack!</button>)
+    let resetBoardButton = (<button onClick={this.props.moves.resetBoard}>Reset Board</button>)
+    let placeShipButton = (<button onClick={this.props.moves.placeShip}>Place Ship</button>)
+
+    return (
+      <div>
+        rendered board: {this.boardToRender()}
+        <table id="board">
+          <tbody>{this.renderBoard()}</tbody>
+        </table>
+        {winner}
+        {this.props.ctx.phase ==="setup" ? placeShipButton : ''}
+        {this.props.ctx.phase ==="attack" ? submitAttackButton : ''}
+        {resetBoardButton}
+      </div>
+    );
+  }
+
+  renderBoard() {
     let tbody = [];
     for (let i = 0; i < 10; i++) {
       let cells = [];
@@ -105,31 +132,7 @@ class Board extends React.Component {
       }
       tbody.push(<tr key={i}>{cells}</tr>);
     }
-
-    let winner = null;
-    if (this.props.ctx.gameover) {
-      if(this.props.ctx.gameover.winner !== undefined) {
-        winner = (<div id="winner">Winner: {this.props.ctx.gameover.winner}</div>)
-      } 
-      else {
-        winner = (<div id="winner">Draw!</div>)
-      }
-    }
-
-    let submitAttackButton = (<button onClick={this.props.moves.submitAttack}>Attack!</button>)
-    let resetBoardButton = (<button onClick={this.props.moves.resetBoard}>Reset Board</button>)
-
-    return (
-      <div>
-        rendered board: {this.boardToRender()}
-        <table id="board">
-          <tbody>{tbody}</tbody>
-        </table>
-        {winner}
-        {submitAttackButton}
-        {resetBoardButton}
-      </div>
-    );
+    return tbody;
   }
 }
 

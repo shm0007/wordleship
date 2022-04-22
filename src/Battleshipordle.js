@@ -1,11 +1,22 @@
 import Validator from "./service/word-validator";
 import { TurnOrder } from 'boardgame.io/core';
+import { Ship }from './Ship';
 
 const BOARD_SIZE = 100;
 
+const SHIP_COUNT = 6;
+
+const SHIPS_SIZE_2 = 1;
+const SHIPS_SIZE_3 = 1;
+const SHIPS_SIZE_4 = 1;
+const SHIPS_SIZE_5 = 1;
+const SHIPS_SIZE_6 = 1;
+const SHIPS_SIZE_7 = 1;
+
 export const Battleshipordle = {
   setup: () => ({ 
-    board: [ Array(BOARD_SIZE).fill(null), Array(BOARD_SIZE).fill(null) ],
+    board: Array(2).fill(Array(100).fill(null)),
+    ships: Array(2).fill(Array()),
     oldBoardState: null
    }),
 
@@ -19,7 +30,14 @@ export const Battleshipordle = {
         clearLetter,
         resetBoard,
         placeShip
+      },
+
+      turn: {
+        onBegin: (G, ctx) => { G.oldBoardState = G.board },
+    // onBegin: setupShips(),
       }
+
+
     },
     attack: {
       moves: {
@@ -86,6 +104,38 @@ function submitAttack(G, ctx) {
  * @param {object} id 
  */
 function placeShip(G, ctx, id) {
+  let ship = [];
+  let player = getPlayer();
+  
+  let letter = '';
+  let coord = 0;
+  for(let i = 0; i < BOARD_SIZE; i++) {
+    if(G.oldBoardState === null) {
+      if(G.board[player][i] !== null) {
+          letter = G.board[player][i];
+          coord = i;
+          ship.push({"letter": letter, "coord":coord});
+          continue;
+      }
+    }
+
+    else if(G.oldBoardState[player][i] !== G.board[player][i]) {
+      letter = G.board[player][i];
+      coord = i;
+      ship.push({'letter': letter, 'coord': coord});
+    }
+  }
+
+  console.log(ship);
+  let word = Ship.toString(ship);
+  if(Validator.validate(word)) {
+    console.log(`${word} is valid!`);
+    G.ships[player].push((ship));
+    ctx.events.endTurn();
+  }
+  else {
+    console.log(`${word} is not a valid word!`);
+  }
 
 }
 
@@ -137,4 +187,8 @@ function resetBoard(G, ctx, id) {
 //Grab the enemy player's index
 function getOtherPlayer(currentPlayer) {
     return currentPlayer === 1 ? 0 : 1;
+}
+
+function getPlayer() {
+  return 0;
 }
