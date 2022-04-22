@@ -19,9 +19,7 @@ class Board extends React.Component {
     }
   };
 
-
   onClick = id => {
-    console.log(this.state.visibleBoard);
     if (this.isActive(id)) {
       this.setState({ focusedCell: id })
       window.addEventListener('keydown', this.keydown)
@@ -118,6 +116,7 @@ class Board extends React.Component {
 
     let submitAttackButton = (<button onClick={this.props.moves.submitAttack}>Attack!</button>)
     let resetBoardButton = (<button onClick={this.props.moves.resetBoard}>Reset Board</button>)
+    let placeShipButton = (<button onClick={this.props.moves.placeShip}>Place Ship</button>)
 
     return (
       <div>
@@ -126,7 +125,8 @@ class Board extends React.Component {
           <tbody>{tbody}</tbody>
         </table>
         {winner}
-        {submitAttackButton}
+        {this.props.ctx.phase ==="setup" ? placeShipButton : ''}
+        {this.props.ctx.phase ==="attack" ? submitAttackButton : ''}
         {resetBoardButton}
       </div>
     );
