@@ -3,9 +3,19 @@ import { TurnOrder } from 'boardgame.io/core';
 
 const BOARD_SIZE = 100;
 
+const SHIP_COUNT = 6;
+
+const SHIPS_SIZE_2 = 1;
+const SHIPS_SIZE_3 = 1;
+const SHIPS_SIZE_4 = 1;
+const SHIPS_SIZE_5 = 1;
+const SHIPS_SIZE_6 = 1;
+const SHIPS_SIZE_7 = 1;
+
 export const Battleshipordle = {
   setup: () => ({ 
-    board: [ Array(BOARD_SIZE).fill(null), Array(BOARD_SIZE).fill(null) ],
+    board: Array(2).fill(Array(100).fill(null)),
+    ships: Array(2).fill(Array(SHIP_COUNT).fill(null)),
     oldBoardState: null
    }),
 
@@ -19,7 +29,13 @@ export const Battleshipordle = {
         clearLetter,
         resetBoard,
         placeShip
+      },
+
+      turn: {
+        onBegin: setupShips(),
       }
+
+
     },
     attack: {
       moves: {
@@ -137,4 +153,8 @@ function resetBoard(G, ctx, id) {
 //Grab the enemy player's index
 function getOtherPlayer(currentPlayer) {
     return currentPlayer === 1 ? 0 : 1;
+}
+
+function setupShips() {
+  
 }
