@@ -24,6 +24,7 @@ export const Battleshipordle = {
     //handle building ship words
     setup: {
       start: true,
+      endIf: G => (G.ships[0].length === 3 && G.ships[1] === 3),
       next: 'attack',
       moves: {
         insertLetter,
@@ -109,12 +110,15 @@ function placeShip(G, ctx, id) {
   
   let letter = '';
   let coord = 0;
+  let legalPlacement = true;
+  let legalWord = false;
+
   for(let i = 0; i < BOARD_SIZE; i++) {
     if(G.oldBoardState === null) {
       if(G.board[player][i] !== null) {
           letter = G.board[player][i];
           coord = i;
-          ship.push({"letter": letter, "coord":coord});
+          ship.push({"letter": letter, "coord":coord, "status": "safe"});
           continue;
       }
     }
@@ -122,21 +126,34 @@ function placeShip(G, ctx, id) {
     else if(G.oldBoardState[player][i] !== G.board[player][i]) {
       letter = G.board[player][i];
       coord = i;
-      ship.push({'letter': letter, 'coord': coord});
+      ship.push({'letter': letter, 'coord': coord, "status" : "safe"});
     }
   }
 
   console.log(ship);
+
+
+  legalPlacement = correctPosition(ship);
+
+  if(legalPlacement === true){
+    console.log('Legal word placement');
+  }
+  else{
+    console.log('Illegal word placement')
+  }
+
   let word = Ship.toString(ship);
-  if(Validator.validate(word)) {
+  legalWord = Validator.validate(word);
+  if(legalWord) {
     console.log(`${word} is valid!`);
-    G.ships[player].push((ship));
-    ctx.events.endTurn();
   }
   else {
     console.log(`${word} is not a valid word!`);
   }
-
+  if(legalWord && legalPlacement) {
+    G.ships[player].push((ship));
+    ctx.events.endTurn();
+  }
 }
 
 /**
@@ -191,4 +208,45 @@ function getOtherPlayer(currentPlayer) {
 
 function getPlayer() {
   return 0;
+}
+
+/**
+ * Helper function that checks for correct word placement on the board
+ * Takes in an object with coord data, places this data into an array,
+ * determines whether it is vertical or horizontal based on positions of
+ * first 2 entries. Uses the alignment to see if the whole word is properly
+ * aligned
+ *
+ * @param word - takes in a json object containing the word
+ * @returns {boolean} returns true if placement is legal, if not false
+ */
+function correctPosition(word){
+  let legalPlacement = true;
+  let coordCheckArray = []
+  let alignment = 1;
+
+  for(let i = 0; i < word.length; i ++){
+    coordCheckArray[i] = word[i].coord;
+  }
+  if(coordCheckArray[1]- coordCheckArray[0] === 1){
+    alignment = 1;
+  }
+  else if(coordCheckArray[1] - coordCheckArray[0] === 10){
+    alignment = 10;
+  }
+  else{
+    legalPlacement = false;
+  }
+
+  let counter = 2;
+  while(legalPlacement && counter < coordCheckArray.length){
+    if(coordCheckArray[counter] - coordCheckArray[counter -1]
+        !== alignment){
+      legalPlacement = false;
+
+    }
+    counter ++;
+
+  }
+  return legalPlacement;
 }

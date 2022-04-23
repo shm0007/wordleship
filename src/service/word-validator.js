@@ -38,5 +38,12 @@ class Validator{
             return false;
     }
 
+    containsLetter(letter, word){
+        let charArray = word.split('');
+
+        return charArray.includes(letter);
+    }
+
+
 }
 export default new Validator();
