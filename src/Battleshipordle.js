@@ -24,7 +24,7 @@ export const Battleshipordle = {
     //handle building ship words
     setup: {
       start: true,
-      endIf: G => (G.ships[0].length === 3 && G.ships[1] === 3),
+      endIf: G => (G.ships[0].length === 3),
       next: 'attack',
       moves: {
         insertLetter,
@@ -84,17 +84,32 @@ function clearLetter(G, ctx, id) {
  * @param {int} id 
  */
 function submitAttack(G, ctx) {
+  let legalPlacement = false;
+  let legalWord = false;
   console.log("attack!");
 
-  let enemy = getOtherPlayer();
-  let word = findWord(G, ctx, enemy);
 
-  if(Validator.validate(word)) {
+  let enemy = getOtherPlayer();
+  let wordObject = findWord(G, ctx, enemy);
+  let word = Ship.toString(wordObject);
+
+  legalPlacement = correctPosition(wordObject);
+
+
+  legalWord = Validator.validate(word);
+  if(legalWord) {
     //Handle dealing ship damage
     console.log(`${word} is valid!`);
   }
   else {
     console.log(`${word} is not a valid word!`);
+  }
+
+  if(legalPlacement){
+    console.log('Valid word placement')
+  }
+  else{
+    console.log('Illegal word placement')
   }
 }
 
@@ -162,27 +177,35 @@ function placeShip(G, ctx, id) {
  * For simplicity, words can only made left -> right 
  * or top -> bottom. This means that in a valid case, we will 
  * encounter each letter in the order they are in the word.
- * 
+ *
+ *
+ * MW- editing this function so that the word will have location data as well, changed
+ * return value type from string to json object
  * @param {object} G 
  * @param {object} ctx 
  * @param {int} board - board to search
- * @returns {string} - word it found
+ * @returns object - word it found
  */
 function findWord(G, ctx, board) {
-
+  let coord = 0;
+  let letter = '';
   let enemy = getOtherPlayer(ctx.currentPlayer);
   
-  let word = "";
+  let word = [];
   for(let i = 0; i < BOARD_SIZE; i++) {
     if(G.oldBoardState === null) {
       if(G.board[enemy][i] !== null) {
-          word += G.board[enemy][i];
+        coord = i;
+        letter = G.board[enemy][i];
+        word.push({'letter': letter, 'coord': coord});
           continue;
       }
     }
 
     if(G.oldBoardState[enemy][i] !== G.board[enemy][i]) {
-      word += G.board[enemy][i];
+      coord = i;
+      letter = G.board[enemy][i];
+      word.push({'letter': letter, 'coord': coord});
     }
   }
 
