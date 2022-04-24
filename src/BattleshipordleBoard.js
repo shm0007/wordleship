@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import './board.css';
+
 class Board extends React.Component {
   static propTypes = {
     G: PropTypes.any.isRequired,
@@ -66,7 +67,7 @@ class Board extends React.Component {
 
   boardToRender() {
     if(this.props.ctx.phase === "setup") {
-      return 0; //TODO: Change this to be dynamic to the player
+      return this.props.ctx.currentPlayer; //TODO: Change this to be dynamic to the player
     }
     return this.props.ctx.currentPlayer === 1 ? 0 : 1;
   }
@@ -126,7 +127,7 @@ class Board extends React.Component {
             className={classnames}
             onClick={() => this.onClick(id)}
           >
-            {this.props.G.board[this.boardToRender()][id]}
+            {this.props.isActive?  this.props.G.board[this.boardToRender()][id]: '-' }
           </td>
         );
       }
