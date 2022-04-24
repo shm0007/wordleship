@@ -88,15 +88,13 @@ function submitAttack(G, ctx) {
   let legalWord = false;
   console.log("attack!");
 
-
   let enemy = getOtherPlayer();
   let wordObject = findWord(G, ctx, enemy);
   let word = Ship.toString(wordObject);
 
   legalPlacement = correctPosition(wordObject);
-
-
   legalWord = Validator.validate(word);
+
   if(legalWord) {
     //Handle dealing ship damage
     console.log(`${word} is valid!`);
@@ -110,6 +108,11 @@ function submitAttack(G, ctx) {
   }
   else{
     console.log('Illegal word placement')
+  }
+
+  if(legalWord && legalPlacement){
+    //handle ship damage and updates
+    executeAttack(G, ctx, wordObject);
   }
 }
 
@@ -235,7 +238,7 @@ function getPlayer() {
 
 /**
  * Helper function that checks for correct word placement on the board
- * Takes in an object with coord data, places this data into an array,
+ * Takes in an object with coordinate data, places this data into an array,
  * determines whether it is vertical or horizontal based on positions of
  * first 2 entries. Uses the alignment to see if the whole word is properly
  * aligned
@@ -272,4 +275,20 @@ function correctPosition(word){
 
   }
   return legalPlacement;
+}
+
+function executeAttack(G, ctx, word){
+  let enemy = getOtherPlayer();
+  let board = G.board[enemy];
+  let ships = G.ships[enemy];
+  let coordinates = [];
+
+  for(let i = 0 ; i < word.length; i++){
+    coordinates[i] = word[i].coord;
+  }
+
+
+
+
+
 }
