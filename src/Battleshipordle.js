@@ -4,16 +4,12 @@ import { Ship }from './Ship';
 
 const BOARD_SIZE = 100;
 
-const SHIP_COUNT = 6;
-const MIN_SHIP_SIZE = 3;
-const MAX_SHIP_SIZE = 7;
-
-
 let ships_placed = 0;
 let current_ship_size = 0;
 
 //Number of ships for each player
 // ship_size: number of ships
+const SHIP_COUNT = 6;
 const ship_factory = {
   3: 1,
   4: 2,
@@ -21,6 +17,9 @@ const ship_factory = {
   6: 1,
   7: 1
 }
+
+const MIN_SHIP_SIZE = 3;
+const MAX_SHIP_SIZE = 7;
 
 export const Battleshipordle = {
   setup: () => ({ 
