@@ -5,13 +5,22 @@ import { Ship }from './Ship';
 const BOARD_SIZE = 100;
 
 const SHIP_COUNT = 6;
+const MIN_SHIP_SIZE = 3;
+const MAX_SHIP_SIZE = 7;
 
-const SHIPS_SIZE_2 = 1;
-const SHIPS_SIZE_3 = 1;
-const SHIPS_SIZE_4 = 1;
-const SHIPS_SIZE_5 = 1;
-const SHIPS_SIZE_6 = 1;
-const SHIPS_SIZE_7 = 1;
+
+let ships_placed = 0;
+let current_ship_size = 0;
+
+//Number of ships for each player
+// ship_size: number of ships
+const ship_factory = {
+  3: 1,
+  4: 2,
+  5: 2,
+  6: 1,
+  7: 1
+}
 
 export const Battleshipordle = {
   setup: () => ({ 
@@ -21,11 +30,11 @@ export const Battleshipordle = {
    }),
 
   phases: {
-    //handle building ship words
     setup: {
       start: true,
-      endIf: G => (G.ships[0].length === 3),
       next: 'attack',
+      onBegin: (G, ctx) => { current_ship_size = MIN_SHIP_SIZE },
+      endif: allShipsPlaced,
       moves: {
         insertLetter,
         clearLetter,
@@ -34,7 +43,8 @@ export const Battleshipordle = {
       },
 
       turn: {
-        onBegin: (G, ctx) => { G.oldBoardState = G.board },
+        onBegin: beginSetupTurn,
+        onEnd: (G, ctx) => { if(ctx.currentPlayer == "0") { ships_placed++; console.log(ships_placed) } }
     // onBegin: setupShips(),
       }
 
@@ -145,28 +155,36 @@ function placeShip(G, ctx, id) {
     }
   }
 
-  console.log(ship);
-
+  // console.log(ship);
 
   legalPlacement = correctPosition(ship);
 
   if(legalPlacement === true){
     console.log('Legal word placement');
-  }
-  else{
+  } else {
     console.log('Illegal word placement')
   }
 
   let word = Ship.toString(ship);
   legalWord = Validator.validate(word);
+  
   if(legalWord) {
     console.log(`${word} is valid!`);
-  }
-  else {
+  } else {
     console.log(`${word} is not a valid word!`);
   }
-  if(legalWord && legalPlacement) {
+
+  let expectedLength = ship.length === current_ship_size;
+
+  if(expectedLength) {
+    console.log("expected Length");
+  } else {
+    console.log(`Illegal length ${ship.length} == ${current_ship_size}`);
+  }
+
+  if(legalWord && legalPlacement && expectedLength) {
     G.ships[player].push((ship));
+    ships_placed++;
     ctx.events.endTurn();
   }
 }
@@ -273,3 +291,16 @@ function correctPosition(word){
   }
   return legalPlacement;
 }
+
+function allShipsPlaced(G, ctx) {
+  return G.ships[0].length === SHIP_COUNT && G.ships[1].length === SHIP_COUNT;
+}
+
+function beginSetupTurn(G, ctx) {
+  if(ships_placed > ship_factory.current_ship_size) {
+    ships_placed = 0;
+    current_ship_size++;
+  }
+}
+
+
