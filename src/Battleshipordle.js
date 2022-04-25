@@ -1,31 +1,42 @@
 import Validator from "./service/word-validator";
 import { TurnOrder } from 'boardgame.io/core';
 import { Ship }from './Ship';
+import { Instructions } from './instructions';
 
 const BOARD_SIZE = 100;
 
+//Number of ships for each player
+// ship_size: number of ships
 const SHIP_COUNT = 6;
+const ship_factory = {
+  3: 1,
+  4: 2,
+  5: 2,
+  6: 1,
+  7: 1
+}
 
-const SHIPS_SIZE_2 = 1;
-const SHIPS_SIZE_3 = 1;
-const SHIPS_SIZE_4 = 1;
-const SHIPS_SIZE_5 = 1;
-const SHIPS_SIZE_6 = 1;
-const SHIPS_SIZE_7 = 1;
+const MIN_SHIP_SIZE = 3;
+const MAX_SHIP_SIZE = 7;
 
 export const Battleshipordle = {
-  setup: () => ({ 
+
+  setup: () => ({
     board: Array(2).fill(Array(100).fill(null)),
     ships: Array(2).fill(Array()),
-    oldBoardState: null
+    oldBoardState: null,
+    ships_placed: 0,
+    current_ship_size: 0,
+    current_instruction: null
    }),
 
   phases: {
     //handle building ship words
     setup: {
       start: true,
-      endIf: G => (G.ships[0].length === 3),
       next: 'attack',
+      onBegin: (G, ctx) => { G.current_ship_size = MIN_SHIP_SIZE;},
+      endIf: allShipsPlaced,
       moves: {
         insertLetter,
         clearLetter,
@@ -34,7 +45,8 @@ export const Battleshipordle = {
       },
 
       turn: {
-        onBegin: (G, ctx) => { G.oldBoardState = G.board },
+        onBegin: beginSetupTurn,
+        onEnd: (G, ctx) => { if(ctx.currentPlayer == "0") { G.ships_placed++; console.log("total ships:" + G.ships_placed) } }
     // onBegin: setupShips(),
       }
 
@@ -88,6 +100,7 @@ function submitAttack(G, ctx) {
   let legalWord = false;
   console.log("attack!");
 
+
   let enemy = getOtherPlayer();
   let wordObject = findWord(G, ctx, enemy);
   let word = Ship.toString(wordObject);
@@ -124,7 +137,7 @@ function submitAttack(G, ctx) {
  */
 function placeShip(G, ctx, id) {
   let ship = [];
-  let player = getPlayer();
+  let player = getPlayer(ctx);
   
   let letter = '';
   let coord = 0;
@@ -153,23 +166,31 @@ function placeShip(G, ctx, id) {
 
   legalPlacement = correctPosition(ship);
 
-  if(legalPlacement === true){
-    console.log('Legal word placement');
-  }
-  else{
+  if(!legalPlacement === true){
     console.log('Illegal word placement')
   }
 
   let word = Ship.toString(ship);
   legalWord = Validator.validate(word);
-  if(legalWord) {
-    console.log(`${word} is valid!`);
-  }
-  else {
+
+  if(!legalWord) {
     console.log(`${word} is not a valid word!`);
   }
-  if(legalWord && legalPlacement) {
+
+  let expectedLength = ship.length === G.current_ship_size;
+
+  if(!expectedLength) {
+    console.log(`Illegal length ${ship.length} == ${G.current_ship_size}`);
+  }
+
+  if(legalWord && legalPlacement && expectedLength) {
     G.ships[player].push((ship));
+    G.oldBoardState = G.board;
+
+    //increment the number of ships that have been placed for both players
+    if(ctx.currentPlayer == 1) {
+      G.ships_placed++;
+    }
     ctx.events.endTurn();
   }
 }
@@ -232,13 +253,13 @@ function getOtherPlayer(currentPlayer) {
     return currentPlayer === 1 ? 0 : 1;
 }
 
-function getPlayer() {
-  return 0;
+function getPlayer(ctx) {
+  return ctx.currentPlayer;
 }
 
 /**
  * Helper function that checks for correct word placement on the board
- * Takes in an object with coordinate data, places this data into an array,
+ * Takes in an object with coord data, places this data into an array,
  * determines whether it is vertical or horizontal based on positions of
  * first 2 entries. Uses the alignment to see if the whole word is properly
  * aligned
@@ -276,6 +297,25 @@ function correctPosition(word){
   }
   return legalPlacement;
 }
+
+function allShipsPlaced(G, ctx) {
+  return G.ships[0].length === SHIP_COUNT && G.ships[1].length === SHIP_COUNT;
+}
+
+function beginSetupTurn(G, ctx) {
+
+  if(ctx.currentPlayer == 0) {
+    if(G.ships_placed > ship_factory[G.current_ship_size]) {
+      G.ships_placed = 0;
+      G.current_ship_size++;
+    }
+  }
+
+  G.current_instruction = Instructions.PLACE_SHIP(G.current_ship_size)
+}
+
+
+
 
 function executeAttack(G, ctx, word){
   let enemy = getOtherPlayer();

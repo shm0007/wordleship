@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import './board.css';
+
 class Board extends React.Component {
   static propTypes = {
     G: PropTypes.any.isRequired,
@@ -66,7 +67,7 @@ class Board extends React.Component {
 
   boardToRender() {
     if(this.props.ctx.phase === "setup") {
-      return 0; //TODO: Change this to be dynamic to the player
+      return this.props.ctx.currentPlayer; //TODO: Change this to be dynamic to the player
     }
     return this.props.ctx.currentPlayer === 1 ? 0 : 1;
   }
@@ -90,15 +91,28 @@ class Board extends React.Component {
     let placeShipButton = (<button onClick={this.props.moves.placeShip}>Place Ship</button>)
 
     return (
-      <div>
-        rendered board: {this.boardToRender()}
+      <div className="board-main">
+        <div className="player">
+          You are {this.props.playerID ? this.props.PlayerID : 'N/A' }
+        </div>
+        <div className="player-board-title">
+          Player {this.boardToRender()}'s board
+        </div>
+        <div className="instruction">
+          {this.props.G.current_instruction}
+        </div>
+        <div className="turn">
+          It is Player {this.props.ctx.currentPlayer}'s turn
+        </div>
         <table id="board">
           <tbody>{this.renderBoard()}</tbody>
         </table>
         {winner}
-        {this.props.ctx.phase ==="setup" ? placeShipButton : ''}
-        {this.props.ctx.phase ==="attack" ? submitAttackButton : ''}
-        {resetBoardButton}
+        <div className="button-options">
+          {this.props.ctx.phase ==="setup" ? placeShipButton : ''}
+          {this.props.ctx.phase ==="attack" ? submitAttackButton : ''}
+          {resetBoardButton}
+        </div>
       </div>
     );
   }
@@ -126,7 +140,7 @@ class Board extends React.Component {
             className={classnames}
             onClick={() => this.onClick(id)}
           >
-            {this.props.G.board[this.boardToRender()][id]}
+            {this.props.isActive?  this.props.G.board[this.boardToRender()][id]: '-' }
           </td>
         );
       }
