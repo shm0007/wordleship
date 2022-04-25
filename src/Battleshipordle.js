@@ -22,6 +22,7 @@ const MIN_SHIP_SIZE = 3;
 const MAX_SHIP_SIZE = 7;
 
 export const Battleshipordle = {
+ 
   setup: () => ({ 
     board: Array(2).fill(Array(100).fill(null)),
     ships: Array(2).fill(Array()),
@@ -33,7 +34,7 @@ export const Battleshipordle = {
       start: true,
       next: 'attack',
       onBegin: (G, ctx) => { current_ship_size = MIN_SHIP_SIZE },
-      endif: allShipsPlaced,
+      endIf: allShipsPlaced,
       moves: {
         insertLetter,
         clearLetter,
@@ -43,7 +44,7 @@ export const Battleshipordle = {
 
       turn: {
         onBegin: beginSetupTurn,
-        onEnd: (G, ctx) => { if(ctx.currentPlayer == "0") { ships_placed++; console.log(ships_placed) } }
+        onEnd: (G, ctx) => { if(ctx.currentPlayer == "0") { ships_placed++; console.log("total ships:" + ships_placed) } }
     // onBegin: setupShips(),
       }
 
@@ -97,7 +98,6 @@ function submitAttack(G, ctx) {
   let legalWord = false;
   console.log("attack!");
 
-
   let enemy = getOtherPlayer();
   let wordObject = findWord(G, ctx, enemy);
   let word = Ship.toString(wordObject);
@@ -130,7 +130,7 @@ function submitAttack(G, ctx) {
  */
 function placeShip(G, ctx, id) {
   let ship = [];
-  let player = getPlayer();
+  let player = getPlayer(ctx);
   
   let letter = '';
   let coord = 0;
@@ -183,6 +183,8 @@ function placeShip(G, ctx, id) {
 
   if(legalWord && legalPlacement && expectedLength) {
     G.ships[player].push((ship));
+    G.oldBoardState = G.board;
+    while (ship.length) { ship.pop(); }
     ships_placed++;
     ctx.events.endTurn();
   }
@@ -246,8 +248,8 @@ function getOtherPlayer(currentPlayer) {
     return currentPlayer === 1 ? 0 : 1;
 }
 
-function getPlayer() {
-  return 0;
+function getPlayer(ctx) {
+  return ctx.currentPlayer;
 }
 
 /**
