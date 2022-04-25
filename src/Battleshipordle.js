@@ -107,18 +107,11 @@ function submitAttack(G, ctx) {
 
 
   legalWord = Validator.validate(word);
-  if(legalWord) {
-    //Handle dealing ship damage
-    console.log(`${word} is valid!`);
-  }
-  else {
+  if(!legalWord) {
     console.log(`${word} is not a valid word!`);
   }
 
-  if(legalPlacement){
-    console.log('Valid word placement')
-  }
-  else{
+  if(!legalPlacement){
     console.log('Illegal word placement')
   }
 }
@@ -159,26 +152,20 @@ function placeShip(G, ctx, id) {
 
   legalPlacement = correctPosition(ship);
 
-  if(legalPlacement === true){
-    console.log('Legal word placement');
-  } else {
+  if(!legalPlacement === true){
     console.log('Illegal word placement')
   }
 
   let word = Ship.toString(ship);
   legalWord = Validator.validate(word);
   
-  if(legalWord) {
-    console.log(`${word} is valid!`);
-  } else {
+  if(!legalWord) {
     console.log(`${word} is not a valid word!`);
   }
 
   let expectedLength = ship.length === G.current_ship_size;
 
-  if(expectedLength) {
-    console.log("expected Length");
-  } else {
+  if(!expectedLength) {
     console.log(`Illegal length ${ship.length} == ${G.current_ship_size}`);
   }
 
