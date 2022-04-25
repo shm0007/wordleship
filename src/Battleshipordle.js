@@ -34,7 +34,7 @@ export const Battleshipordle = {
     setup: {
       start: true,
       next: 'attack',
-      onBegin: (G, ctx) => { G.current_ship_size = MIN_SHIP_SIZE; G.current_instruction = Instructions.PLACE_SHIP(G.current_ship_size) },
+      onBegin: (G, ctx) => { G.current_ship_size = MIN_SHIP_SIZE;},
       endIf: allShipsPlaced,
       moves: {
         insertLetter,
@@ -172,7 +172,11 @@ function placeShip(G, ctx, id) {
   if(legalWord && legalPlacement && expectedLength) {
     G.ships[player].push((ship));
     G.oldBoardState = G.board;
-    G.ships_placed++;
+
+    //increment the number of ships that have been placed for both players
+    if(ctx.currentPlayer == 1) {
+      G.ships_placed++;
+    }
     ctx.events.endTurn();
   }
 }
@@ -285,10 +289,15 @@ function allShipsPlaced(G, ctx) {
 }
 
 function beginSetupTurn(G, ctx) {
-  if(G.ships_placed > ship_factory[G.current_ship]) {
-    G.ships_placed = 0;
-    G.current_ship_size++;
+  
+  if(ctx.currentPlayer == 0) {
+    if(G.ships_placed > ship_factory[G.current_ship_size]) {
+      G.ships_placed = 0;
+      G.current_ship_size++;
+    }
   }
+  
+  G.current_instruction = Instructions.PLACE_SHIP(G.current_ship_size) 
 }
 
 
