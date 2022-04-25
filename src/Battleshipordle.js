@@ -1,11 +1,9 @@
 import Validator from "./service/word-validator";
 import { TurnOrder } from 'boardgame.io/core';
 import { Ship }from './Ship';
+import { Instructions } from './instructions';
 
 const BOARD_SIZE = 100;
-
-let ships_placed = 0;
-let current_ship_size = 0;
 
 //Number of ships for each player
 // ship_size: number of ships
@@ -26,14 +24,17 @@ export const Battleshipordle = {
   setup: () => ({ 
     board: Array(2).fill(Array(100).fill(null)),
     ships: Array(2).fill(Array()),
-    oldBoardState: null
+    oldBoardState: null,
+    ships_placed: 0,
+    current_ship_size: 0,
+    current_instruction: null
    }),
 
   phases: {
     setup: {
       start: true,
       next: 'attack',
-      onBegin: (G, ctx) => { current_ship_size = MIN_SHIP_SIZE },
+      onBegin: (G, ctx) => { G.current_ship_size = MIN_SHIP_SIZE; G.current_instruction = Instructions.PLACE_SHIP(G.current_ship_size) },
       endIf: allShipsPlaced,
       moves: {
         insertLetter,
@@ -44,7 +45,7 @@ export const Battleshipordle = {
 
       turn: {
         onBegin: beginSetupTurn,
-        onEnd: (G, ctx) => { if(ctx.currentPlayer == "0") { ships_placed++; console.log("total ships:" + ships_placed) } }
+        onEnd: (G, ctx) => { if(ctx.currentPlayer == "0") { G.ships_placed++; console.log("total ships:" + G.ships_placed) } }
     // onBegin: setupShips(),
       }
 
@@ -154,7 +155,7 @@ function placeShip(G, ctx, id) {
     }
   }
 
-  // console.log(ship);
+  console.log(ship);
 
   legalPlacement = correctPosition(ship);
 
@@ -173,19 +174,18 @@ function placeShip(G, ctx, id) {
     console.log(`${word} is not a valid word!`);
   }
 
-  let expectedLength = ship.length === current_ship_size;
+  let expectedLength = ship.length === G.current_ship_size;
 
   if(expectedLength) {
     console.log("expected Length");
   } else {
-    console.log(`Illegal length ${ship.length} == ${current_ship_size}`);
+    console.log(`Illegal length ${ship.length} == ${G.current_ship_size}`);
   }
 
   if(legalWord && legalPlacement && expectedLength) {
     G.ships[player].push((ship));
     G.oldBoardState = G.board;
-    while (ship.length) { ship.pop(); }
-    ships_placed++;
+    G.ships_placed++;
     ctx.events.endTurn();
   }
 }
@@ -298,9 +298,9 @@ function allShipsPlaced(G, ctx) {
 }
 
 function beginSetupTurn(G, ctx) {
-  if(ships_placed > ship_factory.current_ship_size) {
-    ships_placed = 0;
-    current_ship_size++;
+  if(G.ships_placed > ship_factory[G.current_ship]) {
+    G.ships_placed = 0;
+    G.current_ship_size++;
   }
 }
 
