@@ -34,7 +34,7 @@ export const Battleshipordle = {
     setup: {
       start: true,
       next: 'attack',
-      onBegin: (G, ctx) => { G.current_ship_size = MIN_SHIP_SIZE; G.current_instruction = Instructions.PLACE_SHIP(G.current_ship_size) },
+      onBegin: (G, ctx) => { G.current_ship_size = MIN_SHIP_SIZE;},
       endIf: allShipsPlaced,
       moves: {
         insertLetter,
@@ -107,18 +107,11 @@ function submitAttack(G, ctx) {
 
 
   legalWord = Validator.validate(word);
-  if(legalWord) {
-    //Handle dealing ship damage
-    console.log(`${word} is valid!`);
-  }
-  else {
+  if(!legalWord) {
     console.log(`${word} is not a valid word!`);
   }
 
-  if(legalPlacement){
-    console.log('Valid word placement')
-  }
-  else{
+  if(!legalPlacement){
     console.log('Illegal word placement')
   }
 }
@@ -159,33 +152,31 @@ function placeShip(G, ctx, id) {
 
   legalPlacement = correctPosition(ship);
 
-  if(legalPlacement === true){
-    console.log('Legal word placement');
-  } else {
+  if(!legalPlacement === true){
     console.log('Illegal word placement')
   }
 
   let word = Ship.toString(ship);
   legalWord = Validator.validate(word);
   
-  if(legalWord) {
-    console.log(`${word} is valid!`);
-  } else {
+  if(!legalWord) {
     console.log(`${word} is not a valid word!`);
   }
 
   let expectedLength = ship.length === G.current_ship_size;
 
-  if(expectedLength) {
-    console.log("expected Length");
-  } else {
+  if(!expectedLength) {
     console.log(`Illegal length ${ship.length} == ${G.current_ship_size}`);
   }
 
   if(legalWord && legalPlacement && expectedLength) {
     G.ships[player].push((ship));
     G.oldBoardState = G.board;
-    G.ships_placed++;
+
+    //increment the number of ships that have been placed for both players
+    if(ctx.currentPlayer == 1) {
+      G.ships_placed++;
+    }
     ctx.events.endTurn();
   }
 }
@@ -298,10 +289,15 @@ function allShipsPlaced(G, ctx) {
 }
 
 function beginSetupTurn(G, ctx) {
-  if(G.ships_placed > ship_factory[G.current_ship]) {
-    G.ships_placed = 0;
-    G.current_ship_size++;
+  
+  if(ctx.currentPlayer == 0) {
+    if(G.ships_placed > ship_factory[G.current_ship_size]) {
+      G.ships_placed = 0;
+      G.current_ship_size++;
+    }
   }
+  
+  G.current_instruction = Instructions.PLACE_SHIP(G.current_ship_size) 
 }
 
 
