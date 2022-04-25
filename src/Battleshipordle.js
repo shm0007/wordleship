@@ -439,10 +439,17 @@ function executeAttack(G, ctx, word){
   let enemy = getOtherPlayer();
   let board = G.board[enemy];
   let ships = G.ships[enemy];
-  let coordinates = [];
+  let hits = [];
 
-  for(let i = 0 ; i < word.length; i++){
-    coordinates[i] = word[i].coord;
+
+  for(let i = 0; i < word.length; i++){
+    if(board[word.coord[i]] === null){
+      hits.push({'letter': word.letter[i], 'coord': word.coord[i], 'status': 'miss'})
+    }
+    else{
+      hits.push({'letter': word.letter[i], 'coord': word.coord[i], 'status': 'hit'});
+    }
+
   }
 
 }
