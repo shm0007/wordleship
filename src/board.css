@@ -1,39 +1,73 @@
+.board-main {
+  display: flex;
+  justify-content: center;
+  align-items: middle;
+  flex-direction: column;
+}
+
 #board {
-    border-collapse: collapse;
-    font-family: monospace;
-  }
-  
-  #winner {
-    margin-top: 25px;
-    width: 168px;
-    text-align: center;
-  }
-  
-  td {
-    text-align: center;
-    font-weight: bold;
-    font-size: 25px;
-    color: white;
-    width: 50px;
-    height: 50px;
-    line-height: 50px;
-    border: 1px solid rgb(255, 255, 255);
-    background: rgb(28, 55, 104);
-  }
-  
-  td.active {
-    cursor: pointer;
-    background: #7f92ff;
-  }
-  
-  td.active:hover {
-    background: #eef6ff;
-  }
+  border-collapse: collapse;
+  font-family: monospace;
+  width: 80%;
+  margin: auto;
+}
 
-  td.focused {
-      background: #ffffff;
-  }
+#winner {
+  margin-top: 25px;
+  width: 168px;
+  text-align: center;
+}
 
-  td.ship {
-    background: grey;
-  }
+td {
+  text-align: center;
+  font-weight: bold;
+  font-size: 25px;
+  color: white;
+  max-width: 50px;
+  width: 50px;
+  max-height: 50px;
+  height: 50px;
+  line-height: 50px;
+  border: 1px solid rgb(255, 255, 255);
+  background: rgb(28, 55, 104);
+}
+
+td.active {
+  cursor: pointer;
+  background: #7f92ff;
+}
+
+td.active:hover {
+  background: #68aeff;
+}
+
+td.focused {
+    background: #ffffff;
+    color: black;
+}
+
+td.ship {
+  background: grey;
+}
+
+.button-options > button:not(:first-child) {
+  margin-left: 5px;
+}
+
+.button-options {
+  margin-top: 3px;
+}
+
+.board-main button {
+  color: black;
+  background: green;
+  border-radius: .5rem;
+  border: none;
+  padding: .5rem .75rem;
+  cursor: pointer;
+}
+
+.board-main button:hover {
+  background: black;
+  color: white;
+}

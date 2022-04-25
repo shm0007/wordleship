@@ -91,7 +91,7 @@ class Board extends React.Component {
     let placeShipButton = (<button onClick={this.props.moves.placeShip}>Place Ship</button>)
 
     return (
-      <div>
+      <div className="board-main">
         <div className="player">
           You are {this.props.playerID ? this.props.PlayerID : 'N/A' }
         </div>
@@ -108,9 +108,11 @@ class Board extends React.Component {
           <tbody>{this.renderBoard()}</tbody>
         </table>
         {winner}
-        {this.props.ctx.phase ==="setup" ? placeShipButton : ''}
-        {this.props.ctx.phase ==="attack" ? submitAttackButton : ''}
-        {resetBoardButton}
+        <div className="button-options">
+          {this.props.ctx.phase ==="setup" ? placeShipButton : ''}
+          {this.props.ctx.phase ==="attack" ? submitAttackButton : ''}
+          {resetBoardButton}
+        </div>
       </div>
     );
   }
