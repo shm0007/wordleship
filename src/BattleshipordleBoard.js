@@ -92,7 +92,18 @@ class Board extends React.Component {
 
     return (
       <div>
-        rendered board: {this.boardToRender()}
+        <div className="player">
+          You are {this.props.playerID ? this.props.PlayerID : 'N/A' }
+        </div>
+        <div className="player-board-title">
+          Player {this.boardToRender()}'s board
+        </div>
+        <div className="instruction">
+          {this.props.G.current_instruction}
+        </div>
+        <div className="turn">
+          It is Player {this.props.ctx.currentPlayer}'s turn
+        </div>
         <table id="board">
           <tbody>{this.renderBoard()}</tbody>
         </table>
