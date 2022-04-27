@@ -419,6 +419,7 @@ function setAllTilesClean(G) {
       G.board[b][i]['dirty'] = false;
     }
   }
+  G.current_instruction = Instructions.PLACE_SHIP(G.current_ship_size) 
 }
 
 
