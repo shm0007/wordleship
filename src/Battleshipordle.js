@@ -20,10 +20,10 @@ const MIN_SHIP_SIZE = 3;
 const MAX_SHIP_SIZE = 7;
 
 export const Battleshipordle = {
-
-  setup: () => ({
+ 
+  setup: () => ({ 
     board: Array(2).fill(Array(100).fill(null)),
-    ships: Array(2).fill(Array()),
+    ships: Array(2).fill([]),
     oldBoardState: null,
     ships_placed: 0,
     current_ship_size: 0,
@@ -31,7 +31,6 @@ export const Battleshipordle = {
    }),
 
   phases: {
-    //handle building ship words
     setup: {
       start: true,
       next: 'attack',
@@ -46,7 +45,7 @@ export const Battleshipordle = {
 
       turn: {
         onBegin: beginSetupTurn,
-        onEnd: (G, ctx) => { if(ctx.currentPlayer == "0") { G.ships_placed++; console.log("total ships:" + G.ships_placed) } }
+        onEnd: (G, ctx) => { if(ctx.currentPlayer === "0") { G.ships_placed++; console.log("total ships:" + G.ships_placed) } }
     // onBegin: setupShips(),
       }
 
@@ -100,26 +99,17 @@ function submitAttack(G, ctx) {
   let legalWord = false;
   console.log("attack!");
 
-
   let enemy = getOtherPlayer();
   let wordObject = findWord(G, ctx, enemy);
   let word = Ship.toString(wordObject);
 
   legalPlacement = correctPosition(wordObject);
   legalWord = Validator.validate(word);
-
-  if(legalWord) {
-    //Handle dealing ship damage
-    console.log(`${word} is valid!`);
-  }
-  else {
+  if(!legalWord) {
     console.log(`${word} is not a valid word!`);
   }
 
-  if(legalPlacement){
-    console.log('Valid word placement')
-  }
-  else{
+  if(!legalPlacement){
     console.log('Illegal word placement')
   }
 
@@ -163,7 +153,6 @@ function placeShip(G, ctx, id) {
 
   console.log(ship);
 
-
   legalPlacement = correctPosition(ship);
 
   if(!legalPlacement === true){
@@ -172,7 +161,7 @@ function placeShip(G, ctx, id) {
 
   let word = Ship.toString(ship);
   legalWord = Validator.validate(word);
-
+  
   if(!legalWord) {
     console.log(`${word} is not a valid word!`);
   }
@@ -188,7 +177,7 @@ function placeShip(G, ctx, id) {
     G.oldBoardState = G.board;
 
     //increment the number of ships that have been placed for both players
-    if(ctx.currentPlayer == 1) {
+    if(ctx.currentPlayer === 1) {
       G.ships_placed++;
     }
     ctx.events.endTurn();
@@ -304,14 +293,14 @@ function allShipsPlaced(G, ctx) {
 
 function beginSetupTurn(G, ctx) {
 
-  if(ctx.currentPlayer == 0) {
+  if(ctx.currentPlayer === 0) {
     if(G.ships_placed > ship_factory[G.current_ship_size]) {
       G.ships_placed = 0;
       G.current_ship_size++;
     }
   }
-
-  G.current_instruction = Instructions.PLACE_SHIP(G.current_ship_size)
+  
+  G.current_instruction = Instructions.PLACE_SHIP(G.current_ship_size) 
 }
 
 
