@@ -86,14 +86,19 @@ class Board extends React.Component {
       }
     }
 
-    let submitAttackButton = (<button onClick={this.props.moves.submitAttack}>Attack!</button>)
-    let resetBoardButton = (<button onClick={this.props.moves.resetBoard}>Reset Board</button>)
-    let placeShipButton = (<button onClick={this.props.moves.placeShip}>Place Ship</button>)
+    let submitAttackButton = (<button onClick={() => this.props.moves.submitAttack()}>Attack!</button>)
+    let resetBoardButton = (<button onClick={() => this.props.moves.resetBoard()}>Reset Board</button>)
+    let placeShipButton = (<button onClick={() => this.props.moves.placeShip()}>Place Ship</button>)
+
+    console.log(`this.props.G.PlayerID = ${this.props.G.PlayerID}`);
+    console.log(`this.props.ctx.PlayerID = ${this.props.ctx.PlayerID}`)
+    console.log(`this.props.PlayerID = ${this.props.PlayerID}`)
+
 
     return (
       <div className="board-main">
         <div className="player">
-          You are {this.props.playerID ? this.props.PlayerID : 'N/A' }
+          You are {this.props.playerID ? this.props.PlayerID : 'N/A'}
         </div>
         <div className="player-board-title">
           Player {this.boardToRender()}'s board
@@ -140,7 +145,7 @@ class Board extends React.Component {
             className={classnames}
             onClick={() => this.onClick(id)}
           >
-            {this.props.isActive?  this.props.G.board[this.boardToRender()][id]: '-' }
+            {this.props.isActive ? this.props.G.board[this.boardToRender()][id]: '-' }
           </td>
         );
       }
