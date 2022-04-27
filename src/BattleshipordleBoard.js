@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import './board.css';
+import { Ship } from './Ship';
 
 class Board extends React.Component {
   static propTypes = {
@@ -30,7 +31,6 @@ class Board extends React.Component {
   //TODO: Change cell color if its been tampered with in the current turn.
   keydown = e => {
     const key = e.key.toLowerCase();
-    console.log(key);
 
     const isLetter = /^[a-z]$/i.test(key)
 
@@ -86,14 +86,14 @@ class Board extends React.Component {
       }
     }
 
-    let submitAttackButton = (<button onClick={this.props.moves.submitAttack}>Attack!</button>)
-    let resetBoardButton = (<button onClick={this.props.moves.resetBoard}>Reset Board</button>)
-    let placeShipButton = (<button onClick={this.props.moves.placeShip}>Place Ship</button>)
+    let submitAttackButton = (<button onClick={() => this.props.moves.submitAttack()}>Attack!</button>)
+    let resetBoardButton = (<button onClick={() => this.props.moves.resetBoard()}>Reset Board</button>)
+    let placeShipButton = (<button onClick={() => this.props.moves.placeShip()}>Place Ship</button>)
 
     return (
       <div className="board-main">
         <div className="player">
-          You are {this.props.playerID ? this.props.PlayerID : 'N/A' }
+          You are {this.props.playerID ? this.props.playerID : 'N/A'}
         </div>
         <div className="player-board-title">
           Player {this.boardToRender()}'s board
@@ -134,13 +134,25 @@ class Board extends React.Component {
           classnames += " focused";
         }
 
+        let letter = Ship.cellPartofShip(this.props.G, this.boardToRender(), id)
+        let renderAsShip = false;
+        if(letter !== false) {
+          
+          if(Ship.shouldBeRendered(this.props.playerID, this.boardToRender())) {
+
+            console.log(`cell ${id} will be rendered as a ship`);
+            renderAsShip = true;
+            classnames += " ship";
+          }
+        }
+
         cells.push(
           <td
             key={id}
             className={classnames}
             onClick={() => this.onClick(id)}
           >
-            {this.props.isActive?  this.props.G.board[this.boardToRender()][id]: '-' }
+            { renderAsShip ? letter : this.props.G.board[this.boardToRender()][id] }
           </td>
         );
       }

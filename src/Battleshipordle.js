@@ -23,7 +23,7 @@ export const Battleshipordle = {
  
   setup: () => ({ 
     board: Array(2).fill(Array(100).fill(null)),
-    ships: Array(2).fill(Array()),
+    ships: Array(2).fill([]),
     oldBoardState: null,
     ships_placed: 0,
     current_ship_size: 0,
@@ -45,7 +45,7 @@ export const Battleshipordle = {
 
       turn: {
         onBegin: beginSetupTurn,
-        onEnd: (G, ctx) => { if(ctx.currentPlayer == "0") { G.ships_placed++; console.log("total ships:" + G.ships_placed) } }
+        onEnd: (G, ctx) => { if(ctx.currentPlayer === "0") { G.ships_placed++; console.log("total ships:" + G.ships_placed) } }
     // onBegin: setupShips(),
       }
 
@@ -174,7 +174,7 @@ function placeShip(G, ctx, id) {
     G.oldBoardState = G.board;
 
     //increment the number of ships that have been placed for both players
-    if(ctx.currentPlayer == 1) {
+    if(ctx.currentPlayer === 1) {
       G.ships_placed++;
     }
     ctx.events.endTurn();
@@ -290,7 +290,7 @@ function allShipsPlaced(G, ctx) {
 
 function beginSetupTurn(G, ctx) {
   
-  if(ctx.currentPlayer == 0) {
+  if(ctx.currentPlayer === 0) {
     if(G.ships_placed > ship_factory[G.current_ship_size]) {
       G.ships_placed = 0;
       G.current_ship_size++;
