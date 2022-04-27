@@ -104,6 +104,8 @@ function submitAttack(G, ctx) {
   let word = Ship.toString(wordObject);
 
   legalPlacement = correctPosition(wordObject);
+
+
   legalWord = Validator.validate(word);
   if(!legalWord) {
     console.log(`${word} is not a valid word!`);
