@@ -3,7 +3,7 @@ const { Battleshipordle } = require('./Battleshipordle');
 
 const server = Server({
   games: [Battleshipordle],
-  origins: [Origins.LOCALHOST],
+  origins: [Origins.LOCALHOST_IN_DEVELOPMENT],
 });
 
 server.run(8000);
