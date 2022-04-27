@@ -15,6 +15,7 @@ const ship_factory = {
   6: 1,
   7: 1
 }
+const ship_sizes = [4,4,5,6,7];
 
 const MIN_SHIP_SIZE = 3;
 const MAX_SHIP_SIZE = 7;
@@ -45,13 +46,22 @@ export const Battleshipordle = {
 
       turn: {
         onBegin: beginSetupTurn,
-        onEnd: (G, ctx) => { if(ctx.currentPlayer === "0") { G.ships_placed++; console.log("total ships:" + G.ships_placed) } }
+        onEnd: (G, ctx) => {if(ctx.currentPlayer === "1") {  G.ships_placed++;
+                              G.current_ship_size =  ship_sizes[G.ships_placed-1];
+                              G.current_instruction = Instructions.PLACE_SHIP(G.current_ship_size);
+                              console.log("total ships:" + G.ships_placed);
+                              console.log("G.current_instruction:" + G.current_instruction);
+                              console.log("G.current_ship_size:" + G.current_ship_size);
+                              
+                              
+                          }}
     // onBegin: setupShips(),
       }
 
 
     },
     attack: {
+      onBegin: (G,ctx) =>{G.current_instruction = Instructions.ATTACK},
       moves: {
         insertLetter,
         clearLetter,
@@ -101,6 +111,7 @@ function submitAttack(G, ctx) {
 
   let enemy = getOtherPlayer();
   let wordObject = findWord(G, ctx, enemy);
+  //let matchedState = findMatch(G,ctx,wordObject);
   let word = Ship.toString(wordObject);
 
   legalPlacement = correctPosition(wordObject);
@@ -196,7 +207,7 @@ function placeShip(G, ctx, id) {
  * @param {int} board - board to search
  * @returns object - word it found
  */
-function findWord(G, ctx, board) {
+ function findWord(G, ctx, board) {
   let coord = 0;
   let letter = '';
   let enemy = getOtherPlayer(ctx.currentPlayer);
@@ -221,6 +232,54 @@ function findWord(G, ctx, board) {
 
   return word;
 }
+/**
+ * Find Complete/Partial/zero match for each letters of an Attack word. - not finished, WIP
+ * 
+ * @param {object} G 
+ * @param {object} ctx 
+ * @param {object} wordObj - wordObj with letter and coordinates
+ * @returns object - modified version of wordObj with additional attribute stat which could either be C/P/Z
+ */
+function findMatch(G, ctx,wordObj) {
+  let coord = 0;
+  let letter = '';
+  let enemy = getOtherPlayer(ctx.currentPlayer);
+  
+  let word = [];
+  for(let i = 0; i < wordObj.length; i++) {
+    
+    if(G.oldBoardState[enemy][wordObj[i]['coord']] !== null ) {
+      letter = wordObj[i]['letter'];
+      coord = wordObj[i]['coord'];
+      if(G.oldBoardState[enemy][coord] === wordObj[i]['coord']){
+        word.push({'letter': letter, 'coord': wordObj[i]['coord'], stat: "C"});
+      }else{
+          let letterFound = "Z";
+          for(let j = coord+1; j< BOARD_SIZE &&  j< coord+ (10- coord%10); j++){  // search in right to find letter
+              if(G.oldBoardState[enemy][coord] === null)
+                break;
+              if(G.oldBoardState[enemy][coord] === letter){
+                  letterFound = "P";
+                  break; 
+              }
+          }
+          for(let j = coord-1; j>= coord/10; j--){ // search in left to find letter
+            if(G.oldBoardState[enemy][coord] === null)
+              break;
+            if(G.oldBoardState[enemy][coord] === letter){
+                letterFound = "P";
+                break; 
+            }
+        }
+        //TODO: Need to add two more loops to find match in a vertical word
+        word.push({'letter': letter, 'coord': coord, stat: letterFound});
+      }
+     }
+  }
+  console.log(word);
+  return word;
+}
+
 
 /**
  * Reset the board state to the beginning of the current player's
