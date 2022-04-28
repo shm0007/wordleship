@@ -41,13 +41,9 @@ export const Ship = {
     },
 
     shouldBeRendered: (player, board) => {
-
-        //player is looking at their own board
-        //needs to be loosely typed to work as player is a string
-        if(player == board) {
+        if(parseInt(player) === board) {
             return true;
         }
-
         return false;
    }
 }

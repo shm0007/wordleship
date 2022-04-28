@@ -53,7 +53,6 @@ class Board extends React.Component {
         focusedCell: this.state.focusedCell + 10
       })
     }
-
   }
 
   isActive(id) {
@@ -67,12 +66,10 @@ class Board extends React.Component {
 
   boardToRender() {
     if(this.props.ctx.phase === "setup") {
-      return this.props.ctx.currentPlayer; //TODO: Change this to be dynamic to the player
+      return this.props.playerID;
     }
     return this.props.ctx.currentPlayer === 1 ? 0 : 1;
   }
-
-
 
   render() {
 
@@ -87,7 +84,7 @@ class Board extends React.Component {
     }
 
     let submitAttackButton = (<button onClick={() => this.props.moves.submitAttack()}>Attack!</button>)
-    let resetBoardButton = (<button onClick={() => this.props.moves.resetBoard()}>Reset Board</button>)
+    let resetBoardButton = (<button onClick={() => this.props.moves.resetBoard(this.boardToRender())}>Reset Board</button>)
     let placeShipButton = (<button onClick={() => this.props.moves.placeShip()}>Place Ship</button>)
 
     return (
@@ -122,43 +119,47 @@ class Board extends React.Component {
     for (let i = 0; i < 10; i++) {
       let cells = [];
       for (let j = 0; j < 10; j++) {
+
         const id = 10 * i + j;
-
-        let classnames = "";
-
-        if(this.isActive(id)) {
-          classnames += "active";
-        }
-
-        if(this.isFocusedCell(id)) {
-          classnames += " focused";
-        }
-
-        let letter = Ship.cellPartofShip(this.props.G, this.boardToRender(), id)
-        let renderAsShip = false;
-        if(letter !== false) {
-          
-          if(Ship.shouldBeRendered(this.props.playerID, this.boardToRender())) {
-
-            console.log(`cell ${id} will be rendered as a ship`);
-            renderAsShip = true;
-            classnames += " ship";
-          }
-        }
-
-        cells.push(
-          <td
-            key={id}
-            className={classnames}
-            onClick={() => this.onClick(id)}
-          >
-            { renderAsShip ? letter : this.props.G.board[this.boardToRender()][id] }
-          </td>
-        );
+        cells.push(this.renderCell(id));
       }
       tbody.push(<tr key={i}>{cells}</tr>);
     }
     return tbody;
+  }
+
+  renderCell(id) {
+
+    let classnames = "";
+
+    if(this.isActive(id)) {
+      classnames += "active";
+    }
+
+    if(this.isFocusedCell(id)) {
+      classnames += " focused";
+    }
+
+    let letter = Ship.cellPartofShip(this.props.G, this.boardToRender(), id)
+    let renderAsShip = false;
+    if(letter !== false) {
+      
+      if(Ship.shouldBeRendered(this.props.playerID, this.boardToRender())) {
+
+        console.log(`cell ${id} will be rendered as a ship`);
+        renderAsShip = true;
+        classnames += " ship";
+      }
+    }
+    return (
+      <td
+        key={id}
+        className={classnames}
+        onClick={() => this.onClick(id)}
+      >
+        { renderAsShip ? letter : this.props.G.board[this.boardToRender()][id]['letter'] }
+      </td>
+    )
   }
 }
 
