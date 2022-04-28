@@ -1,4 +1,4 @@
-const shipStatus = ['DirectHit', 'InWord', 'NotInWord', 'safe'];
+const shipStatus = ["DirectHit", "InWord", "NotInWord", "safe"];
 export const Ship = {
 
     toString: (ship) => {
@@ -24,8 +24,16 @@ export const Ship = {
         }
         return letterArray;
     },
+
+    /** Helper function to change the status of locations on a ship
+     *
+     * @param ship
+     * @param index
+     * @param attackCode
+     */
     changeStatus: (ship, index, attackCode) => {
-        ship[index]['status'] = shipStatus[attackCode];
+        ship[index].status = "\""+shipStatus[attackCode]+"\"";
+        console.log("Changing ship status to: " + shipStatus[attackCode]);
     },
 
     dump: (ship) => {
