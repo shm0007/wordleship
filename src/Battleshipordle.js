@@ -36,6 +36,7 @@ export const Battleshipordle = {
       next: 'attack',
       onBegin: (G, ctx) => { G.current_ship_size = MIN_SHIP_SIZE;},
       endIf: allShipsPlaced,
+      onEnd: eraseBoards,
       moves: {
         insertLetter,
         clearLetter,
@@ -48,6 +49,7 @@ export const Battleshipordle = {
       }
     },
     attack: {
+      onBegin: (G,ctx) =>{G.current_instruction = Instructions.ATTACK},
       moves: {
         insertLetter,
         clearLetter,
@@ -115,6 +117,7 @@ function submitAttack(G, ctx) {
 
   let enemy = getOtherPlayer();
   let wordObject = findWord(G, ctx, enemy);
+  //let matchedState = findMatch(G,ctx,wordObject);
   let word = Ship.toString(wordObject);
 
   legalPlacement = correctPosition(wordObject);
@@ -179,7 +182,7 @@ function placeShip(G, ctx, id) {
     G.oldBoardState = G.board;
 
     //increment the number of ships that have been placed for both players
-    if(ctx.currentPlayer === 1) {
+    if(parseInt(ctx.currentPlayer) === 1) {
       G.ships_placed++;
     }
     ctx.events.endTurn();
@@ -201,7 +204,7 @@ function placeShip(G, ctx, id) {
  * @param {int} board - board to search
  * @returns object - word it found
  */
-function findWord(G, ctx, board) {
+ function findWord(G, ctx, board) {
   let coord = 0;
   let letter = '';
   let enemy = getOtherPlayer(ctx.currentPlayer);
@@ -217,6 +220,54 @@ function findWord(G, ctx, board) {
 
   return word;
 }
+/**
+ * Find Complete/Partial/zero match for each letters of an Attack word. - not finished, WIP
+ * 
+ * @param {object} G 
+ * @param {object} ctx 
+ * @param {object} wordObj - wordObj with letter and coordinates
+ * @returns object - modified version of wordObj with additional attribute stat which could either be C/P/Z
+ */
+function findMatch(G, ctx,wordObj) {
+  let coord = 0;
+  let letter = '';
+  let enemy = getOtherPlayer(ctx.currentPlayer);
+  
+  let word = [];
+  for(let i = 0; i < wordObj.length; i++) {
+    
+    if(G.oldBoardState[enemy][wordObj[i]['coord']] !== null ) {
+      letter = wordObj[i]['letter'];
+      coord = wordObj[i]['coord'];
+      if(G.oldBoardState[enemy][coord] === wordObj[i]['coord']){
+        word.push({'letter': letter, 'coord': wordObj[i]['coord'], stat: "C"});
+      }else{
+          let letterFound = "Z";
+          for(let j = coord+1; j< BOARD_SIZE &&  j< coord+ (10- coord%10); j++){  // search in right to find letter
+              if(G.oldBoardState[enemy][coord] === null)
+                break;
+              if(G.oldBoardState[enemy][coord] === letter){
+                  letterFound = "P";
+                  break; 
+              }
+          }
+          for(let j = coord-1; j>= coord/10; j--){ // search in left to find letter
+            if(G.oldBoardState[enemy][coord] === null)
+              break;
+            if(G.oldBoardState[enemy][coord] === letter){
+                letterFound = "P";
+                break; 
+            }
+        }
+        //TODO: Need to add two more loops to find match in a vertical word
+        word.push({'letter': letter, 'coord': coord, stat: letterFound});
+      }
+     }
+  }
+  console.log(word);
+  return word;
+}
+
 
 /**
  * Reset the board state to the beginning of the current player's
@@ -299,9 +350,10 @@ function allShipsPlaced(G, ctx) {
 }
 
 function beginSetupTurn(G, ctx) {
-  
-  if(ctx.currentPlayer === 0) {
-    if(G.ships_placed > ship_factory[G.current_ship_size]) {
+  console.log("setup turn...");
+  if(parseInt(ctx.currentPlayer) === 0) {
+    if(G.ships_placed >= ship_factory[G.current_ship_size]) {
+      console.log("Moving to next ship size...");
       G.ships_placed = 0;
       G.current_ship_size++;
     }
@@ -311,16 +363,39 @@ function beginSetupTurn(G, ctx) {
   setAllTilesClean(G); 
 }
 
+/**
+ * 
+ * @param {*} G 
+ * @param {*} ctx 
+ */
 function onTurnBegin(G, ctx) {
-  console.log("cleaning board..."); 
   setAllTilesClean(G);
   G.oldBoardState = G.board;
 }
 
+/**
+ * Helper function that sets all tiles states to dirty
+ * @param {object} G 
+ */
 function setAllTilesClean(G) {
   for(let b = 0; b < G.board.length; b++) {
     for(let i = 0; i < G.board[b].length; i++) {
       G.board[b][i]['dirty'] = false;
+    }
+  }
+}
+
+
+/**
+ * Iterate throug the board and erase all data on it
+ * This is used between the setup and attack phase to clear the board
+ * of leftover data from placing ships.
+ * @param {*} G 
+ */
+function eraseBoards(G) {
+  for(let b = 0; b < G.board.length; b++) {
+    for(let i = 0; i < G.board[b].length; i++) {
+      G.board[b][i] = {'letter': null, 'dirty': false}
     }
   }
 }
