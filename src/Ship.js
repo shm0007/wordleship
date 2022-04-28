@@ -32,7 +32,7 @@ export const Ship = {
      * @param attackCode
      */
     changeStatus: (ship, index, attackCode) => {
-        ship[index].status = "\""+shipStatus[attackCode]+"\"";
+        ship[index].status = shipStatus[attackCode];
         console.log("Changing ship status to: " + shipStatus[attackCode]);
     },
 
