@@ -15,6 +15,7 @@ const ship_factory = {
   6: 1,
   7: 1
 }
+const ship_sizes = [4,4,5,6,7];
 
 const MIN_SHIP_SIZE = 3;
 const MAX_SHIP_SIZE = 7;
@@ -76,7 +77,7 @@ export const Battleshipordle = {
 function insertLetter(G, ctx, board, cell_id, letter) {
 
   //prevent the player from creating a crossword-like ship
-  if(ctx.currentPlayer == board) {
+  if(parseInt(ctx.currentPlayer) == board) {
     let letter = Ship.cellPartofShip(G, board, cell_id) 
     if(letter !== false) {
       return;
@@ -345,15 +346,26 @@ function correctPosition(word){
   return legalPlacement;
 }
 
+/**
+ * Checks to see if all ships have been placed.
+ * @param {*} G 
+ * @param {*} ctx 
+ * @returns 
+ */
 function allShipsPlaced(G, ctx) {
   return G.ships[0].length === SHIP_COUNT && G.ships[1].length === SHIP_COUNT;
 }
 
+/**
+ * Check at the beginning of each round of turns that
+ * We have an adequate amount of each sized ship
+ * before moving onto the next size.
+ * @param {*} G 
+ * @param {*} ctx 
+ */
 function beginSetupTurn(G, ctx) {
-  console.log("setup turn...");
   if(parseInt(ctx.currentPlayer) === 0) {
     if(G.ships_placed >= ship_factory[G.current_ship_size]) {
-      console.log("Moving to next ship size...");
       G.ships_placed = 0;
       G.current_ship_size++;
     }
@@ -364,7 +376,9 @@ function beginSetupTurn(G, ctx) {
 }
 
 /**
- * 
+ * Save the old state of the board
+ * Idk why or if this actually works because of the 
+ * Immer issue but board behavior seems okay.
  * @param {*} G 
  * @param {*} ctx 
  */

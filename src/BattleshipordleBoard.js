@@ -53,7 +53,6 @@ class Board extends React.Component {
         focusedCell: this.state.focusedCell + 10
       })
     }
-
   }
 
   isActive(id) {
@@ -71,8 +70,6 @@ class Board extends React.Component {
     }
     return this.props.ctx.currentPlayer === 1 ? 0 : 1;
   }
-
-
 
   render() {
 
@@ -122,10 +119,8 @@ class Board extends React.Component {
     for (let i = 0; i < 10; i++) {
       let cells = [];
       for (let j = 0; j < 10; j++) {
+
         const id = 10 * i + j;
-
-        
-
         cells.push(this.renderCell(id));
       }
       tbody.push(<tr key={i}>{cells}</tr>);
@@ -166,7 +161,6 @@ class Board extends React.Component {
       </td>
     )
   }
-
 }
 
 export default Board;
