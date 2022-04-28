@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import './board.css';
 import { Ship } from './Ship';
+import Rules from './Rules';
 
 class Board extends React.Component {
   static propTypes = {
@@ -98,7 +99,7 @@ class Board extends React.Component {
         <h2 className="instruction" Style="text-align: center">
           {this.props.G.current_instruction}
         </h2>
-        <div class='table-wrapper'>
+        <div className='table-wrapper'>
           <div className="player-board-title">
             Player {this.boardToRender()}'s board
           </div>
@@ -115,6 +116,7 @@ class Board extends React.Component {
           {this.props.ctx.phase ==="attack" ? submitAttackButton : ''}
           {resetBoardButton}
         </div>
+        <Rules />
       </div>
     );
   }
