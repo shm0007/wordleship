@@ -91,9 +91,6 @@ class Board extends React.Component {
     return (
       <div className="board-main">
         <div className="match">
-          Match {this.props.matchID}
-        </div>
-        <div className="match">
           Match #{this.props.matchID}
         </div>
         <h1 className="turn" Style="text-align: center">
@@ -103,23 +100,6 @@ class Board extends React.Component {
           {this.props.G.current_instruction}
         </h2>
         <div className='table-wrapper'>
-          <div className="player-board-title">
-            Player {this.boardToRender()}'s board
-          </div>
-          <table id="board">
-            <tbody>{this.renderBoard()}</tbody>
-          </table>
-          <div className="player">
-            You are Player {this.props.playerID ? this.props.playerID : 'N/A'}
-          </div>
-        </div>
-        <h1 className="turn" Style="text-align: center">
-          It is Player {this.props.ctx.currentPlayer}'s turn
-        </h1>
-        <h2 className="instruction" Style="text-align: center">
-          {this.props.G.current_instruction}
-        </h2>
-        <div class='table-wrapper'>
           <div className="player-board-title">
             Player {this.boardToRender()}'s board
           </div>
