@@ -89,6 +89,9 @@ class Board extends React.Component {
 
     return (
       <div className="board-main">
+        <div className="match">
+          Match {this.props.matchID}
+        </div>
         <div className="player">
           You are {this.props.playerID ? this.props.playerID : 'N/A'}
         </div>
