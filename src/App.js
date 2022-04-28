@@ -12,12 +12,21 @@ const BattleshipordleClient = Client({
 });
 
 class App extends React.Component {
-  state = { playerID: null };
+  state = { 
+    playerID: null, 
+    matchID: null
+  };
+
 
   render() {
     if(this.state.playerID === null) {
       return (
         <div>
+          <div>
+            <p>MatchID: </p>
+            <input type="number" id="matchID"></input>
+            <button onClick={() => this.setState({matchID: document.getElementById('matchID').value })}>Set Match ID</button>
+          </div>
           <p>Play as</p>
           <button onClick={() => this.setState({ playerID: "0" })}>
             Player 0
@@ -31,7 +40,7 @@ class App extends React.Component {
     
     return (
       <div>
-        <BattleshipordleClient playerID={this.state.playerID} />
+        <BattleshipordleClient playerID={this.state.playerID} matchID={this.state.matchID} />
       </div>
     );
   }
