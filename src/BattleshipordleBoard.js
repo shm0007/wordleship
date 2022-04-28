@@ -152,7 +152,8 @@ class Board extends React.Component {
             className={classnames}
             onClick={() => this.onClick(id)}
           >
-            { renderAsShip ? letter : this.props.G.board[this.boardToRender()][id] }
+            { this.isActive(id)?  // We will not show ships when player is not active 
+                    (renderAsShip ? letter : this.props.G.board[this.boardToRender()][id]): "" }
           </td>
         );
       }
