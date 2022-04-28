@@ -91,6 +91,9 @@ class Board extends React.Component {
     return (
       <div className="board-main">
         <div className="match">
+          Match {this.props.matchID}
+        </div>
+        <div className="match">
           Match #{this.props.matchID}
         </div>
         <h1 className="turn" Style="text-align: center">
