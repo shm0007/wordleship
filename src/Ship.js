@@ -26,17 +26,22 @@ export const Ship = {
 
             for(let j = 0; j < G.ships[board][i].length; j++) {
                 if(G.ships[board][i][j]['coord'] === id) {
-                    return G.ships[board][i][j]['letter'];
+                    return G.ships[board][i][j];
                 }
             }
         }
         return false;
     },
 
-    shouldBeRendered: (player, board) => {
+    shouldBeRendered: (player, board, cell) => {
         if(parseInt(player) === board) {
             return true;
         }
+
+        if(cell['status'] !== "safe") {
+            return true;
+        }
+
         return false;
    }
 }
