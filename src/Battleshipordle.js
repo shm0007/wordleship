@@ -21,6 +21,7 @@ const MIN_SHIP_SIZE = 3;
 const MAX_SHIP_SIZE = 7;
 
 
+
 export const Battleshipordle = {
  
   setup: () => ({ 
@@ -447,8 +448,10 @@ function executeAttack(G, ctx, wordObj){
     let enemy = getOtherPlayer(getPlayer(ctx));
     console.log('Execution started');
     let position = Ship.position(wordObj);
-    let ship = [];
+    let wordLetters = Ship.toString(wordObj).split('');
+    let shipLetters = '';
     console.log(position.length);
+    console.log(wordLetters);
 
 
     for(let p = 0; p < position.length; p++) {
@@ -460,21 +463,35 @@ function executeAttack(G, ctx, wordObj){
             while(!hit && posCounter < G.ships[enemy][shipCounter].length){
                 if(G.ships[enemy][shipCounter][posCounter].coord === position[p]){
                     hit = true;
-                    ship = G.ships[enemy][shipCounter];
+                    shipLetters = Ship.toString(G.ships[enemy][shipCounter]).split('');
+                    if(G.ships[enemy][shipCounter][posCounter]['letter'] === wordLetters[p]){
+                        Ship.changeStatus(G.ships[enemy][shipCounter], posCounter, 0);
+                        console.log("Direct Hit an position: " + position[p]);
+                    }
+                    else if(shipLetters.includes(wordLetters[p])){
+                        Ship.changeStatus(G.ships[enemy][shipCounter], posCounter, 1);
+                        console.log("Letter in word at position: " + position[p]);
+                    }
+                    else{
+                        Ship.changeStatus(G.ships[enemy][shipCounter], posCounter, 2);
+                        console.log("Letter not in word at position: " + position[p]);
+                    }
+
                 }
-                console.log('Ship position' + posCounter);
+                //console.log('Ship position' + posCounter);
                 posCounter ++;
             }
             posCounter = 0;
-            console.log('Ship # '+ shipCounter);
+           // console.log('Ship # '+ shipCounter);
             shipCounter ++
         }
         if(!hit){
             console.log('Miss!');
+
         }
         else{
             console.log("Hit");
-            console.log(ship);
+           // console.log(ship);
         }
     }
 }
