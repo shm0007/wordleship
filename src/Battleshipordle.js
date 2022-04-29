@@ -74,7 +74,7 @@ export const Battleshipordle = {
  * @param {Object} G 
  * @param {Object} ctx 
  * @param {int} board board currently being rendered
- * @param {int} id id of the cell to insert into
+ * @param {int} cell_id id of the cell to insert into
  * @param {char} letter letter to insert into cell
  */
 function insertLetter(G, ctx, board, cell_id, letter) {
@@ -114,21 +114,16 @@ function clearLetter(G, ctx, id) {
  * If both conditions are satisfied, the attack is executed
  * @param {object} G 
  * @param {object} ctx 
- * @param {int} id 
  */
 function submitAttack(G, ctx) {
-  let legalPlacement = false;
-  let legalWord = false;
   console.log("attack!");
 
   let enemy = getOtherPlayer(getPlayer(ctx));
   let wordObject = findWord(G, ctx, enemy);
   let word = Ship.toString(wordObject);
+  let legalPlacement = correctPosition(wordObject);
+  let legalWord = Validator.validate(word);
 
-  legalPlacement = correctPosition(wordObject);
-
-
-  legalWord = Validator.validate(word);
   if(!legalWord) {
     console.log(`${word} is not a valid word!`);
   }
@@ -155,8 +150,6 @@ function placeShip(G, ctx, id) {
   
   let letter = '';
   let coord = 0;
-  let legalPlacement = true;
-  let legalWord = false;
 
   for(let i = 0; i < BOARD_SIZE; i++) {
     if(G.board[player][i]['dirty'] === true) {
@@ -168,14 +161,14 @@ function placeShip(G, ctx, id) {
 
   console.log(ship);
 
-  legalPlacement = correctPosition(ship);
+  let legalPlacement = correctPosition(ship);
 
   if(!legalPlacement === true){
     console.log('Illegal word placement')
   }
 
   let word = Ship.toString(ship);
-  legalWord = Validator.validate(word);
+  let legalWord = Validator.validate(word);
   
   if(!legalWord) {
     console.log(`${word} is not a valid word!`);
@@ -496,11 +489,6 @@ function executeAttack(G, ctx, wordObj){
         }
         if(!hit){
             console.log('Miss!');
-
-        }
-        else{
-            console.log("Hit");
-           // console.log(ship);
         }
     }
 }
