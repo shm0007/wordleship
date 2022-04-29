@@ -1,3 +1,5 @@
+const shipStatus = ['DirectHit', 'InWord', 'NotInWord', 'safe'];
+
 export const Ship = {
 
     toString: (ship) => {
