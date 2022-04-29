@@ -1,9 +1,10 @@
-const shipStatus = ["DirectHit", "InWord", "NotInWord", "safe"];
+const shipStatus = ['DirectHit', 'InWord', 'NotInWord', 'safe'];
+
 export const Ship = {
 
     toString: (ship) => {
         let word = "";
-        for (let i = 0; i < ship.length; i++) {
+        for(let i = 0; i < ship.length; i++ ) {
             word += ship[i]['letter'];
         }
         return word;
@@ -52,19 +53,24 @@ export const Ship = {
     cellPartofShip: (G, board, id) => {
         for (let i = 0; i < G.ships[board].length; i++) {
 
-            for (let j = 0; j < G.ships[board][i].length; j++) {
-                if (G.ships[board][i][j]['coord'] === id) {
-                    return G.ships[board][i][j]['letter'];
+            for(let j = 0; j < G.ships[board][i].length; j++) {
+                if(G.ships[board][i][j]['coord'] === id) {
+                    return G.ships[board][i][j];
                 }
             }
         }
         return false;
     },
 
-    shouldBeRendered: (player, board) => {
-        if (parseInt(player) === board) {
+    shouldBeRendered: (player, board, cell) => {
+        if(parseInt(player) === board) {
             return true;
         }
+
+        if(cell['status'] !== "safe") {
+            return true;
+        }
+
         return false;
     },
 
@@ -80,6 +86,19 @@ export const Ship = {
 
     getLocationStatus: (ship, index) =>{
         return ship[index]['status'];
+    },
+
+    getDirectHitStatus : () => {
+        return shipStatus[0];
+    },
+
+    getInWordStatus: () => {
+        return shipStatus[1];
+    },
+
+    getNotInWordStatus: () =>{
+        return shipStatus[2];
     }
+
 
 }
