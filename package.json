@@ -1,6 +1,5 @@
 {
   "name": "battleshipordle",
-  "homepage": "https://pages.github.umn.edu/way00021/security-game",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
@@ -18,10 +17,12 @@
   },
   "scripts": {
     "start": "node -r esm server.js",
+    "start-local": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "serve": "node -r esm src/server.js",
+    "serve": "node -r esm server.js",
+    "serve-test": "node -r esm src/server.js",
     "predeploy": "npm run build",
     "deploy": "gh-pages -d build"
   },
