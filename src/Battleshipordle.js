@@ -65,11 +65,7 @@ export const Battleshipordle = {
     order: TurnOrder.DEFAULT,
 
   },
-    endIf: (G,ctx) => {
-      if(allShipsSunk()){
-          return {winner : getPlayer(ctx)}
-      }
-    }
+  endIf: (G,ctx) => checkEndGame 
 };
 
 /**
@@ -326,7 +322,7 @@ function getOtherPlayer(currentPlayer) {
 }
 
 function getPlayer(ctx) {
-  return ctx.currentPlayer;
+  return parseInt(ctx.currentPlayer);
 }
 
 /**
@@ -511,4 +507,10 @@ function allShipsSunk(G, ctx){
     }
     return gameOver;
 
+}
+
+function checkEndGame(G, ctx) {
+    if(allShipsSunk()){
+        return { winner : ctx.CurrentPlayer }
+    }
 }
