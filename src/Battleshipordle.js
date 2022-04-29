@@ -65,7 +65,7 @@ export const Battleshipordle = {
     order: TurnOrder.DEFAULT,
 
   },
-  endIf: (G,ctx) => checkEndGame 
+  endIf: checkEndGame 
 };
 
 /**
@@ -498,6 +498,7 @@ function executeAttack(G, ctx, wordObj){
 }
 
 function allShipsSunk(G, ctx){
+
     let enemy = getOtherPlayer(getPlayer(ctx));
     let gameOver = true;
     let shipCounter = 0;
@@ -510,11 +511,13 @@ function allShipsSunk(G, ctx){
         shipCounter ++;
     }
     return gameOver;
-
 }
 
 function checkEndGame(G, ctx) {
-    if(allShipsSunk()){
-        return { winner : ctx.CurrentPlayer }
-    }
+  console.log("Checking endgame...");
+  if(allShipsSunk(G, ctx)){
+    console.log("All ships sunk");
+      return { winner : ctx.CurrentPlayer }
+  }
+  return false;
 }
