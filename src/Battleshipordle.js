@@ -13,7 +13,6 @@ const ship_factory = {
   4: 2,
   5: 2,
   6: 1,
-  7: 1
 }
 const ship_sizes = [4,4,5,6,7];
 
@@ -50,7 +49,7 @@ export const Battleshipordle = {
       }
     },
     attack: {
-      onBegin: (G,ctx) =>{G.current_instruction = Instructions.ATTACK},
+      onBegin: setAttackMessage,
       moves: {
         insertLetter,
         clearLetter,
@@ -352,7 +351,6 @@ function setAllTilesClean(G) {
       G.board[b][i]['dirty'] = false;
     }
   }
-  G.current_instruction = Instructions.PLACE_SHIP(G.current_ship_size)
 }
 
 
@@ -454,4 +452,9 @@ function checkEndGame(G, ctx) {
       return { winner : ctx.currentPlayer }
   }
   return false;
+}
+
+function setAttackMessage(G, ctx) {
+  console.log("Phase start!");
+  G.current_instruction = Instructions.ATTACK();
 }

@@ -149,12 +149,17 @@ class Board extends React.Component {
 
     let shipCell = Ship.cellPartofShip(this.props.G, this.boardToRender(), id)
     let renderAsShip = false;
+    let renderShipLetter = false;
     if(shipCell !== false) {
       
       if(Ship.shouldBeRendered(this.props.playerID, this.boardToRender(), shipCell)) {
 
         // console.log(`cell ${id} will be rendered as a ship`);
         renderAsShip = true;
+        if(this.boardToRender() == this.props.playerID) {
+          renderShipLetter = true;
+        }
+        
         classnames += " ship" + " " + shipCell.status;
       }
     }
@@ -164,7 +169,7 @@ class Board extends React.Component {
         className={classnames}
         onClick={() => this.onClick(id)}
       >
-        { renderAsShip ? shipCell.letter : this.props.G.board[this.boardToRender()][id]['letter'] }
+        { renderShipLetter ? shipCell.letter : this.props.G.board[this.boardToRender()][id]['letter'] }
       </td>
     )
   }
