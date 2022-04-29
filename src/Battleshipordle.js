@@ -20,6 +20,8 @@ const ship_sizes = [4,4,5,6,7];
 const MIN_SHIP_SIZE = 3;
 const MAX_SHIP_SIZE = 7;
 
+
+
 export const Battleshipordle = {
  
   setup: () => ({ 
@@ -107,6 +109,8 @@ function clearLetter(G, ctx, id) {
 
 /**
  * Validate and attack a ship
+ * Checks if the attack is a valid word and if it is placed correctly
+ * If both conditions are satisfied, the attack is executed
  * @param {object} G 
  * @param {object} ctx 
  * @param {int} id 
@@ -116,14 +120,12 @@ function submitAttack(G, ctx) {
   let legalWord = false;
   console.log("attack!");
 
-  let enemy = getOtherPlayer();
+  let enemy = getOtherPlayer(getPlayer(ctx));
   let wordObject = findWord(G, ctx, enemy);
   //let matchedState = findMatch(G,ctx,wordObject);
   let word = Ship.toString(wordObject);
 
   legalPlacement = correctPosition(wordObject);
-
-
   legalWord = Validator.validate(word);
   if(!legalWord) {
     console.log(`${word} is not a valid word!`);
@@ -131,6 +133,11 @@ function submitAttack(G, ctx) {
 
   if(!legalPlacement){
     console.log('Illegal word placement')
+  }
+
+  if(legalWord && legalPlacement){
+    //handle ship damage and updates
+    executeAttack(G, ctx, wordObject);
   }
 }
 
@@ -326,7 +333,7 @@ function getPlayer(ctx) {
 
 /**
  * Helper function that checks for correct word placement on the board
- * Takes in an object with coord data, places this data into an array,
+ * Takes in an object with coordinate data, places this data into an array,
  * determines whether it is vertical or horizontal based on positions of
  * first 2 entries. Uses the alignment to see if the whole word is properly
  * aligned
@@ -416,11 +423,12 @@ function setAllTilesClean(G) {
       G.board[b][i]['dirty'] = false;
     }
   }
+  G.current_instruction = Instructions.PLACE_SHIP(G.current_ship_size) 
 }
 
 
 /**
- * Iterate throug the board and erase all data on it
+ * Iterate through the board and erase all data on it
  * This is used between the setup and attack phase to clear the board
  * of leftover data from placing ships.
  * @param {*} G 
@@ -431,4 +439,59 @@ function eraseBoards(G) {
       G.board[b][i] = {'letter': null, 'dirty': false}
     }
   }
+}
+
+
+
+
+function executeAttack(G, ctx, wordObj){
+    let enemy = getOtherPlayer(getPlayer(ctx));
+    console.log('Execution started');
+    let position = Ship.position(wordObj);
+    let wordLetters = Ship.toString(wordObj).split('');
+    let shipLetters = '';
+    console.log(position.length);
+    console.log(wordLetters);
+
+
+    for(let p = 0; p < position.length; p++) {
+        let hit = false;
+        let shipCounter = 0;
+        let posCounter = 0;
+        let ship = [];
+        while(!hit && shipCounter < G.ships[enemy].length){
+            while(!hit && posCounter < G.ships[enemy][shipCounter].length){
+                if(G.ships[enemy][shipCounter][posCounter].coord === position[p]){
+                    hit = true;
+                    shipLetters = Ship.toString(G.ships[enemy][shipCounter]).split('');
+                    if(G.ships[enemy][shipCounter][posCounter]['letter'] === wordLetters[p]){
+                        Ship.changeStatus(G.ships[enemy][shipCounter], posCounter, 0);
+                        console.log("Direct Hit an position: " + position[p]);
+                    }
+                    else if(shipLetters.includes(wordLetters[p])){
+                        Ship.changeStatus(G.ships[enemy][shipCounter], posCounter, 1);
+                        console.log("Letter in word at position: " + position[p]);
+                    }
+                    else{
+                        Ship.changeStatus(G.ships[enemy][shipCounter], posCounter, 2);
+                        console.log("Letter not in word at position: " + position[p]);
+                    }
+
+                }
+                //console.log('Ship position' + posCounter);
+                posCounter ++;
+            }
+            posCounter = 0;
+           // console.log('Ship # '+ shipCounter);
+            shipCounter ++
+        }
+        if(!hit){
+            console.log('Miss!');
+
+        }
+        else{
+            console.log("Hit");
+           // console.log(ship);
+        }
+    }
 }
