@@ -5,10 +5,18 @@
   flex-direction: column;
 }
 
+.table-wrapper {
+  max-width: 1000px;
+  display: flex;
+  justify-content: center;
+  margin: auto;
+  flex-direction: column;
+}
+
 #board {
   border-collapse: collapse;
   font-family: monospace;
-  width: 80%;
+  width: 100%;
   margin: auto;
 }
 
@@ -55,12 +63,14 @@ td.ship {
 }
 
 .button-options {
-  margin-top: 3px;
+  display: flex;
+  justify-content: center;
+  margin-top: 5px;
 }
 
 .board-main button {
   color: black;
-  background: green;
+  background: white;
   border-radius: .5rem;
   border: none;
   padding: .5rem .75rem;

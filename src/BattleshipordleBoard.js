@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import './board.css';
 import { Ship } from './Ship';
+import Rules from './Rules';
 
 class Board extends React.Component {
   static propTypes = {
@@ -90,29 +91,32 @@ class Board extends React.Component {
     return (
       <div className="board-main">
         <div className="match">
-          Match {this.props.matchID}
+          Match #{this.props.matchID}
         </div>
-        <div className="player">
-          You are {this.props.playerID ? this.props.playerID : 'N/A'}
-        </div>
-        <div className="player-board-title">
-          Player {this.boardToRender()}'s board
-        </div>
-        <div className="instruction">
-          {this.props.G.current_instruction}
-        </div>
-        <div className="turn">
+        <h1 className="turn" Style="text-align: center">
           It is Player {this.props.ctx.currentPlayer}'s turn
+        </h1>
+        <h2 className="instruction" Style="text-align: center">
+          {this.props.G.current_instruction}
+        </h2>
+        <div className='table-wrapper'>
+          <div className="player-board-title">
+            Player {this.boardToRender()}'s board
+          </div>
+          <table id="board">
+            <tbody>{this.renderBoard()}</tbody>
+          </table>
+          <div className="player">
+            You are Player {this.props.playerID ? this.props.playerID : 'N/A'}
+          </div>
         </div>
-        <table id="board">
-          <tbody>{this.renderBoard()}</tbody>
-        </table>
         {winner}
         <div className="button-options">
           {this.props.ctx.phase ==="setup" ? placeShipButton : ''}
           {this.props.ctx.phase ==="attack" ? submitAttackButton : ''}
           {resetBoardButton}
         </div>
+        <Rules />
       </div>
     );
   }
@@ -143,15 +147,15 @@ class Board extends React.Component {
       classnames += " focused";
     }
 
-    let letter = Ship.cellPartofShip(this.props.G, this.boardToRender(), id)
+    let shipCell = Ship.cellPartofShip(this.props.G, this.boardToRender(), id)
     let renderAsShip = false;
-    if(letter !== false) {
+    if(shipCell !== false) {
       
-      if(Ship.shouldBeRendered(this.props.playerID, this.boardToRender())) {
+      if(Ship.shouldBeRendered(this.props.playerID, this.boardToRender(), shipCell)) {
 
         console.log(`cell ${id} will be rendered as a ship`);
         renderAsShip = true;
-        classnames += " ship";
+        classnames += " ship" + " " + shipCell.status;
       }
     }
     return (
@@ -160,7 +164,7 @@ class Board extends React.Component {
         className={classnames}
         onClick={() => this.onClick(id)}
       >
-        { renderAsShip ? letter : this.props.G.board[this.boardToRender()][id]['letter'] }
+        { renderAsShip ? shipCell.letter : this.props.G.board[this.boardToRender()][id]['letter'] }
       </td>
     )
   }
