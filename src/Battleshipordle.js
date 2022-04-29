@@ -20,8 +20,6 @@ const ship_sizes = [4,4,5,6,7];
 const MIN_SHIP_SIZE = 3;
 const MAX_SHIP_SIZE = 7;
 
-
-
 export const Battleshipordle = {
  
   setup: () => ({ 
@@ -53,7 +51,6 @@ export const Battleshipordle = {
     },
     attack: {
       onBegin: (G,ctx) =>{G.current_instruction = Instructions.ATTACK},
-
       moves: {
         insertLetter,
         clearLetter,
@@ -118,8 +115,8 @@ function clearLetter(G, ctx, id) {
  * Validate and attack a ship
  * Checks if the attack is a valid word and if it is placed correctly
  * If both conditions are satisfied, the attack is executed
- * @param {object} G 
- * @param {object} ctx 
+ * @param {object} G
+ * @param {object} ctx
  */
 function submitAttack(G, ctx) {
   console.log("attack!");
@@ -334,7 +331,7 @@ function getPlayer(ctx) {
 
 /**
  * Helper function that checks for correct word placement on the board
- * Takes in an object with coord data, places this data into an array,
+ * Takes in an object with coordinate data, places this data into an array,
  * determines whether it is vertical or horizontal based on positions of
  * first 2 entries. Uses the alignment to see if the whole word is properly
  * aligned
@@ -424,6 +421,7 @@ function setAllTilesClean(G) {
       G.board[b][i]['dirty'] = false;
     }
   }
+  G.current_instruction = Instructions.PLACE_SHIP(G.current_ship_size)
 }
 
 
