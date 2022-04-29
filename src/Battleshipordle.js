@@ -53,6 +53,7 @@ export const Battleshipordle = {
     },
     attack: {
       onBegin: (G,ctx) =>{G.current_instruction = Instructions.ATTACK},
+
       moves: {
         insertLetter,
         clearLetter,
@@ -66,7 +67,12 @@ export const Battleshipordle = {
     onBegin: onTurnBegin,
     order: TurnOrder.DEFAULT,
 
-  }
+  },
+    endIf: (G,ctx) => {
+      if(allShipsSunk()){
+          return {winner : getPlayer(ctx)}
+      }
+    }
 };
 
 /**
@@ -470,12 +476,16 @@ function executeAttack(G, ctx, wordObj){
                         console.log("Direct Hit an position: " + position[p]);
                     }
                     else if(shipLetters.includes(wordLetters[p])){
-                        Ship.changeStatus(G.ships[enemy][shipCounter], posCounter, 1);
-                        console.log("Letter in word at position: " + position[p]);
+                        if(G.ships[enemy][shipCounter][posCounter]['status'] !== Ship.getDirectHitStatus()) {
+                            Ship.changeStatus(G.ships[enemy][shipCounter], posCounter, 1);
+                            console.log("Letter in word at position: " + position[p]);
+                        }
                     }
                     else{
-                        Ship.changeStatus(G.ships[enemy][shipCounter], posCounter, 2);
-                        console.log("Letter not in word at position: " + position[p]);
+                        if(G.ships[enemy][shipCounter][posCounter]['status'] !== Ship.getDirectHitStatus()) {
+                            Ship.changeStatus(G.ships[enemy][shipCounter], posCounter, 2);
+                            console.log("Letter not in word at position: " + position[p]);
+                        }
                     }
 
                 }
@@ -495,11 +505,12 @@ function executeAttack(G, ctx, wordObj){
 
 function allShipsSunk(G, ctx){
     let enemy = getOtherPlayer(getPlayer(ctx));
-    let allShipsSunk = true;
+    let gameOver = true;
     let shipCounter = 0;
-    while(allShipsSunk && shipCounter < G.ships[enemy].length){
-            allShipsSunk = Ship.checkShipSank(G.ships[enemy]);
+    while(gameOver && shipCounter < G.ships[enemy].length){
+            gameOver = Ship.checkShipSank(G.ships[enemy]);
         shipCounter ++;
     }
+    return gameOver;
 
 }

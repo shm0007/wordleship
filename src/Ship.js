@@ -85,6 +85,18 @@ export const Ship = {
 
     getLocationStatus: (ship, index) =>{
         return ship[index]['status'];
+    },
+
+    getDirectHitStatus : () => {
+        return shipStatus[0];
+    },
+
+    getInWordStatus: () => {
+        return shipStatus[1];
+    },
+
+    getNotInWordStatus: () =>{
+        return shipStatus[2];
     }
 
 }
