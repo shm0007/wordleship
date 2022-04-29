@@ -4,10 +4,13 @@ import { Battleshipordle } from './Battleshipordle';
 import Board from './BattleshipordleBoard';
 import { SocketIO } from 'boardgame.io/multiplayer'
 
+const { protocol, hostname, port } = window.location;
+const server = `${protocol}//${hostname}:${port}`;
+
 const BattleshipordleClient = Client({
   game: Battleshipordle,
   board: Board,
-  multiplayer: SocketIO({ server: 'localhost:8000' }), // Needed for multiplayer
+  multiplayer: SocketIO({ server }), // Needed for multiplayer
   // debug: false,
 });
 
