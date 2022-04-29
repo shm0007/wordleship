@@ -7,7 +7,7 @@ const BOARD_SIZE = 100;
 
 //Number of ships for each player
 // ship_size: number of ships
-const SHIP_COUNT = 6;
+const SHIP_COUNT = 1;
 const ship_factory = {
   3: 1,
   4: 2,
@@ -442,7 +442,7 @@ function allShipsSunk(G, ctx){
         gameOver = false;
     }
     while(gameOver && shipCounter < G.ships[enemy].length){
-            gameOver = Ship.checkShipSank(G.ships[enemy]);
+            gameOver = Ship.checkShipSank(G.ships[enemy][shipCounter]);
         shipCounter ++;
     }
     return gameOver;

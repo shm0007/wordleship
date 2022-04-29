@@ -77,9 +77,10 @@ export const Ship = {
     checkShipSank: (ship) => {
         let sank = true;
         let counter = 0;
-        while (sank) {
-            sank = (ship[counter]['status'] === shipStatus[0]);
-            counter++;
+        while(sank && counter < ship.length) {
+            if(ship[counter].status !== shipStatus[0]) {
+                sank = false;
+            }
         }
         return sank;
     },
