@@ -505,6 +505,10 @@ function allShipsSunk(G, ctx){
     let enemy = getOtherPlayer(getPlayer(ctx));
     let gameOver = true;
     let shipCounter = 0;
+
+    if(G.ships[enemy].length === 0){
+        gameOver = false;
+    }
     while(gameOver && shipCounter < G.ships[enemy].length){
             gameOver = Ship.checkShipSank(G.ships[enemy]);
         shipCounter ++;
