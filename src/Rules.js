@@ -4,7 +4,6 @@ class Rules extends React.Component {
 
     render() {
         return (
-            <div Style="margin-top: 2em">
             <div Style="margin-top: 2em; padding: 2em">
                 <h1>Da Rules:</h1>
                 <ul>
