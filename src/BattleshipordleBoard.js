@@ -69,7 +69,7 @@ class Board extends React.Component {
     if(this.props.ctx.phase === "setup") {
       return this.props.playerID;
     }
-    return this.props.ctx.currentPlayer === 1 ? 0 : 1;
+    return this.props.ctx.currentPlayer === "1" ? 0 : 1;
   }
 
   render() {
@@ -153,7 +153,7 @@ class Board extends React.Component {
       
       if(Ship.shouldBeRendered(this.props.playerID, this.boardToRender(), shipCell)) {
 
-        console.log(`cell ${id} will be rendered as a ship`);
+        // console.log(`cell ${id} will be rendered as a ship`);
         renderAsShip = true;
         classnames += " ship" + " " + shipCell.status;
       }

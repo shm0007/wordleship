@@ -58,6 +58,18 @@ td.ship {
   background: grey;
 }
 
+td.ship.DirectHit {
+  background: green;
+}
+
+td.ship.InWord {
+  background: yellow;
+}
+
+td.ship.NowInWord {
+  background: grey;
+}
+
 .button-options > button:not(:first-child) {
   margin-left: 5px;
 }
