@@ -79,8 +79,10 @@ export const Ship = {
         let counter = 0;
         while(sank && counter < ship.length) {
             if(ship[counter].status !== shipStatus[0]) {
+                console.log(`ship is not sunk`);
                 sank = false;
             }
+            counter++;
         }
         return sank;
     },

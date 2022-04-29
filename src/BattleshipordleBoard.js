@@ -77,7 +77,7 @@ class Board extends React.Component {
     let winner = null;
     if (this.props.ctx.gameover) {
       if(this.props.ctx.gameover.winner !== undefined) {
-        winner = (<div id="winner">Winner: {this.props.ctx.gameover.winner}</div>)
+        winner = (<h1 id="winner" Style="margin: auto">Player {this.props.ctx.gameover.winner} Wins!</h1>)
       } 
       else {
         winner = (<div id="winner">Draw!</div>)
@@ -109,8 +109,8 @@ class Board extends React.Component {
           <div className="player">
             You are Player {this.props.playerID ? this.props.playerID : 'N/A'}
           </div>
+          {winner}
         </div>
-        {winner}
         <div className="button-options">
           {this.props.ctx.phase ==="setup" ? placeShipButton : ''}
           {this.props.ctx.phase ==="attack" ? submitAttackButton : ''}

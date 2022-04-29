@@ -7,7 +7,7 @@ const BOARD_SIZE = 100;
 
 //Number of ships for each player
 // ship_size: number of ships
-const SHIP_COUNT = 1;
+const SHIP_COUNT = 6;
 const ship_factory = {
   3: 1,
   4: 2,
@@ -434,15 +434,16 @@ function executeAttack(G, ctx, wordObj){
 
 function allShipsSunk(G, ctx){
 
-    let enemy = getOtherPlayer(getPlayer(ctx));
+    let enemy = parseInt(getOtherPlayer(getPlayer(ctx)));
     let gameOver = true;
     let shipCounter = 0;
 
     if(G.ships[enemy].length === 0){
         gameOver = false;
     }
+
     while(gameOver && shipCounter < G.ships[enemy].length){
-            gameOver = Ship.checkShipSank(G.ships[enemy][shipCounter]);
+        gameOver = Ship.checkShipSank(G.ships[enemy][shipCounter]);
         shipCounter ++;
     }
     return gameOver;
@@ -450,8 +451,7 @@ function allShipsSunk(G, ctx){
 
 function checkEndGame(G, ctx) {
   if(allShipsSunk(G, ctx)){
-    console.log("All ships sunk");
-      return { winner : ctx.CurrentPlayer }
+      return { winner : ctx.currentPlayer }
   }
   return false;
 }
