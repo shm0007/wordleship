@@ -64,6 +64,7 @@ td.ship.DirectHit {
 
 td.ship.InWord {
   background: yellow;
+  color: black;
 }
 
 td.ship.NowInWord {
