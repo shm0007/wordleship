@@ -98,4 +98,5 @@ export const Ship = {
         return shipStatus[2];
     }
 
+
 }
